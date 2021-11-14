@@ -67,7 +67,7 @@ inputs:
     - api-key
     - apple-id
 
-- register_test_devices: no
+- register_test_devices: "no"
   opts:
     title: Register test devices on the Apple Developer Portal
     summary: If this input is set, the Step will register the known test devices on Bitrise from team members with the Apple Developer Portal.
@@ -77,9 +77,9 @@ inputs:
       Note that setting this to yes may cause devices to be registered against your limited quantity of test devices in the Apple Developer Portal, which can only be removed once annually during your renewal window.
     is_required: true
     value_options:
-    - yes
-    - no
-- min_profile_validity: 0
+    - "yes"
+    - "no"
+- min_profile_validity: "0"
   opts:
     title: The minimum days the Provisioning Profile should be valid
     summary: If this input is set to >0, the managed Provisioning Profile will be renewed if it expires within the configured number of days.
@@ -88,14 +88,14 @@ inputs:
 
       Otherwise the Step renews the managed Provisioning Profile if it is expired.
     is_required: true
-- sign_uitest_targets: no
+- sign_uitest_targets: "no"
   opts:
     title: Ensure code signing assets for UITest targets too
     summary: If this input is set, the Step will manage the codesign assets of the UITest targets (of the main Application) among with the main Application codesign assets.
     is_required: true
     value_options:
-    - yes
-    - no
+    - "yes"
+    - "no"
 
 - certificate_url_list: $BITRISE_CERTIFICATE_URL
   opts:
@@ -142,14 +142,14 @@ inputs:
     is_sensitive: true
     is_dont_change_value: true
 
-- verbose_log: no
+- verbose_log: "no"
   opts:
     title: Verbose logging
     summary: If this input is set, the Step will produce verbose level log messages.
     is_required: true
     value_options:
-    - yes
-    - no
+    - "yes"
+    - "no"
 
 outputs:
 - BITRISE_EXPORT_METHOD:
