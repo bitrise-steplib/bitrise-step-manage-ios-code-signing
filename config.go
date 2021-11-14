@@ -13,16 +13,16 @@ import (
 
 // Config holds the step inputs
 type Config struct {
-	Distribution  string `env:"distribution_method,opt[development,app-store,ad-hoc,enterprise],required"`
-	ProjectPath   string `env:"project_path,dir,required"`
+	Distribution  string `env:"distribution_method,opt[development,app-store,ad-hoc,enterprise]"`
+	ProjectPath   string `env:"project_path,dir"`
 	Scheme        string `env:"scheme,required"`
 	Configuration string `env:"configuration"`
 
-	BitriseConnection string `env:"apple_service_connection,opt[api-key,apple-id],required"`
+	BitriseConnection string `env:"apple_service_connection,opt[api-key,apple-id]"`
 
-	RegisterTestDevices bool `env:"register_test_devices,opt[yes,no],required"`
+	RegisterTestDevices bool `env:"register_test_devices,opt[yes,no]"`
 	MinProfileDaysValid int  `env:"min_profile_validity,required"`
-	SignUITestTargets   bool `env:"sign_uitest_targets,opt[yes,no],required"`
+	SignUITestTargets   bool `env:"sign_uitest_targets,opt[yes,no]"`
 
 	CertificateURLList        string          `env:"certificate_url_list,required"`
 	CertificatePassphraseList stepconf.Secret `env:"passphrase_list,required"`
