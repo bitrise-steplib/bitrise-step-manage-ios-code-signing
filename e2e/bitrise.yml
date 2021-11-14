@@ -47,7 +47,7 @@ workflows:
     - REGISTER_TEST_DEVICES: "yes"
     - INSTALL_PODS: "false"
     - DISTRIBUTION_TYPE: development
-    - CONNECTION: "api-key"
+    - CONNECTION: api-key
     after_run:
     - _run
     - _check_outputs
@@ -88,7 +88,7 @@ workflows:
     - REGISTER_TEST_DEVICES: "yes"
     - INSTALL_PODS: "false"
     - DISTRIBUTION_TYPE: development
-    - CONNECTION: "api-key"
+    - CONNECTION: api-key
     after_run:
     - _run
     - _check_outputs
@@ -129,7 +129,7 @@ workflows:
     - REGISTER_TEST_DEVICES: "yes"
     - INSTALL_PODS: "false"
     - DISTRIBUTION_TYPE: development
-    - CONNECTION: "api-key"
+    - CONNECTION: api-key
     after_run:
     - _run
     - _check_outputs
@@ -149,7 +149,7 @@ workflows:
     - REGISTER_TEST_DEVICES: "yes"
     - INSTALL_PODS: "false"
     - DISTRIBUTION_TYPE: ad-hoc
-    - CONNECTION: "api-key"
+    - CONNECTION: api-key
     after_run:
     - _run
     - _check_outputs
@@ -169,7 +169,7 @@ workflows:
     - REGISTER_TEST_DEVICES: "yes"
     - INSTALL_PODS: "false"
     - DISTRIBUTION_TYPE: app-store
-    - CONNECTION: "api-key"
+    - CONNECTION: api-key
     after_run:
     - _run
     - _check_outputs
@@ -198,7 +198,7 @@ workflows:
     - REGISTER_TEST_DEVICES: "yes"
     - INSTALL_PODS: "false"
     - DISTRIBUTION_TYPE: app-store
-    - CONNECTION: "api-key"
+    - CONNECTION: api-key
     after_run:
     - _run
     - _check_outputs
@@ -227,7 +227,7 @@ workflows:
     - REGISTER_TEST_DEVICES: "yes"
     - INSTALL_PODS: "false"
     - DISTRIBUTION_TYPE: development
-    - CONNECTION: "api-key"
+    - CONNECTION: api-key
     after_run:
     - _run
     - _check_outputs
@@ -259,7 +259,7 @@ workflows:
     - REGISTER_TEST_DEVICES: "yes"
     - INSTALL_PODS: "false"
     - DISTRIBUTION_TYPE: app-store
-    - CONNECTION: "api-key"
+    - CONNECTION: api-key
     after_run:
     - _run
     - _check_outputs

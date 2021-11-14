@@ -25,38 +25,38 @@ toolkit:
 # TODO figure out categories
 
 inputs:
-- distribution_method: "development"
+- distribution_method: development
   opts:
-    title: "Distribution method"
-    summary: "Describes how Xcode should export the archive."
+    title: Distribution method
+    summary: Describes how Xcode should export the archive.
     value_options:
-    - "development"
-    - "app-store"
-    - "ad-hoc"
-    - "enterprise"
+    - development
+    - app-store
+    - ad-hoc
+    - enterprise
     is_required: true
-- project_path: "$BITRISE_PROJECT_PATH"
+- project_path: $BITRISE_PROJECT_PATH
   opts:
-    title: "Project path"
-    summary: "Xcode Project (.xcodeproj) or Workspace (.xcworkspace) path."
+    title: Project path
+    summary: Xcode Project (.xcodeproj) or Workspace (.xcworkspace) path.
     is_required: true
-- scheme: "$BITRISE_SCHEME"
+- scheme: $BITRISE_SCHEME
   opts:
-    title: "Scheme"
-    summary: "Xcode Scheme name."
+    title: Scheme
+    summary: Xcode Scheme name.
     is_required: true
 - configuration:
   opts:
-    title: "Build Configuration"
-    summary: "Xcode Build Configuration."
+    title: Build Configuration
+    summary: Xcode Build Configuration.
     description: |-
       Xcode Build Configuration.
 
       If not specified, the default Build Configuration will be used.
-- apple_service_connection: "api-key"
+- apple_service_connection: api-key
   opts:
-    title: "Apple service connection method"
-    summary: "This input determines which Bitrise Apple service connection should be used for automatic code signing."
+    title: Apple service connection method
+    summary: This input determines which Bitrise Apple service connection should be used for automatic code signing.
     description: |-
       This input determines which Bitrise Apple service connection should be used for automatic code signing.
       Available values:
@@ -64,43 +64,43 @@ inputs:
       - `apple-id`: [Bitrise Apple Service connection with Apple ID.](https://devcenter.bitrise.io/getting-started/connecting-to-services/connecting-to-an-apple-service-with-apple-id/)
     is_required: true
     value_options:
-    - "api-key"
-    - "apple-id"
+    - api-key
+    - apple-id
 
-- register_test_devices: "no"
+- register_test_devices: no
   opts:
-    title: "Register test devices on the Apple Developer Portal"
-    summary: "If this input is set, the Step will register the known test devices on Bitrise from team members with the Apple Developer Portal."
+    title: Register test devices on the Apple Developer Portal
+    summary: If this input is set, the Step will register the known test devices on Bitrise from team members with the Apple Developer Portal.
     description: |-
       If this input is set, the Step will register the known test devices on Bitrise from team members with the Apple Developer Portal.
 
       Note that setting this to yes may cause devices to be registered against your limited quantity of test devices in the Apple Developer Portal, which can only be removed once annually during your renewal window.
     is_required: true
     value_options:
-    - "yes"
-    - "no"
-- min_profile_validity: "0"
+    - yes
+    - no
+- min_profile_validity: 0
   opts:
-    title: "The minimum days the Provisioning Profile should be valid"
-    summary: "If this input is set to >0, the managed Provisioning Profile will be renewed if it expires within the configured number of days."
+    title: The minimum days the Provisioning Profile should be valid
+    summary: If this input is set to >0, the managed Provisioning Profile will be renewed if it expires within the configured number of days.
     description: |-
       If this input is set to >0, the managed Provisioning Profile will be renewed if it expires within the configured number of days.
 
       Otherwise the Step renews the managed Provisioning Profile if it is expired.
     is_required: true
-- sign_uitest_targets: "no"
+- sign_uitest_targets: no
   opts:
-    title: "Ensure code signing assets for UITest targets too"
-    summary: "If this input is set, the Step will manage the codesign assets of the UITest targets (of the main Application) among with the main Application codesign assets."
+    title: Ensure code signing assets for UITest targets too
+    summary: If this input is set, the Step will manage the codesign assets of the UITest targets (of the main Application) among with the main Application codesign assets.
     is_required: true
     value_options:
-    - "yes"
-    - "no"
+    - yes
+    - no
 
-- certificate_url_list: "$BITRISE_CERTIFICATE_URL"
+- certificate_url_list: $BITRISE_CERTIFICATE_URL
   opts:
-    title: "Code signing certificate URL"
-    summary: "URL of the code signing certificate to download."
+    title: Code signing certificate URL
+    summary: URL of the code signing certificate to download.
     description: |
       URL of the code signing certificate to download.
 
@@ -109,70 +109,70 @@ inputs:
       Local file path can be specified, using the file:// URL scheme.
     is_required: true
     is_sensitive: true
-- passphrase_list: "$BITRISE_CERTIFICATE_PASSPHRASE"
+- passphrase_list: $BITRISE_CERTIFICATE_PASSPHRASE
   opts:
-    title: "Code signing certificate passphrase"
-    summary: "Passphrases for the provided code signing certificates."
+    title: Code signing certificate passphrase
+    summary: Passphrases for the provided code signing certificates.
     description: |
       Passphrases for the provided code signing certificates.
 
       Specify as many passphrases as many Code signing certificate URL provided, separated by a pipe (|) character.
     is_required: true
     is_sensitive: true
-- keychain_path: "$BITRISE_KEYCHAIN_PATH"
+- keychain_path: $BITRISE_KEYCHAIN_PATH
   opts:
-    title: "Keychain path"
-    summary: "Path to the Keychain where the code signing certificates will be installed."
+    title: Keychain path
+    summary: Path to the Keychain where the code signing certificates will be installed.
     is_required: true
-- keychain_password: "$BITRISE_KEYCHAIN_PASSWORD"
+- keychain_password: $BITRISE_KEYCHAIN_PASSWORD
   opts:
-    title: "Keychain password"
-    summary: "Password for the provided Keychain."
+    title: Keychain password
+    summary: Password for the provided Keychain.
     is_required: true
     is_sensitive: true
-- build_url: "$BITRISE_BUILD_URL"
+- build_url: $BITRISE_BUILD_URL
   opts:
-    title: "Bitrise build URL"
-    summary: "URL of the current Bitrise build."
+    title: Bitrise build URL
+    summary: URL of the current Bitrise build.
     is_dont_change_value: true
-- build_api_token: "$BITRISE_BUILD_API_TOKEN"
+- build_api_token: $BITRISE_BUILD_API_TOKEN
   opts:
-    title: "Bitrise build API token"
-    summary: "API token to access Bitrise resources during the current build."
+    title: Bitrise build API token
+    summary: API token to access Bitrise resources during the current build.
     is_sensitive: true
     is_dont_change_value: true
 
-- verbose_log: "no"
+- verbose_log: no
   opts:
-    title: "Verbose logging"
-    summary: "If this input is set, the Step will produce verbose level log messages."
+    title: Verbose logging
+    summary: If this input is set, the Step will produce verbose level log messages.
     is_required: true
     value_options:
-    - "yes"
-    - "no"
+    - yes
+    - no
 
 outputs:
 - BITRISE_EXPORT_METHOD:
   opts:
-    title: "The selected distribution type"
+    title: The selected distribution type
     summary: "Distribution type can be one of the following: `development`, `app-store`, `ad-hoc` or `enterprise`."
 - BITRISE_DEVELOPER_TEAM:
   opts:
-    title: "The development team's ID"
-    summary: "The development team's ID, for example, `1MZX23ABCD4`."
+    title: The development team's ID
+    summary: The development team's ID, for example, `1MZX23ABCD4`.
 - BITRISE_DEVELOPMENT_CODESIGN_IDENTITY:
   opts:
-    title: "The development codesign identity's name"
+    title: The development codesign identity's name
     summary: "The development codesign identity's name, for example, `iPhone Developer: Bitrise Bot (VV2J4SV8V4)`."
 - BITRISE_PRODUCTION_CODESIGN_IDENTITY:
   opts:
-    title: "The production codesign identity's name"
+    title: The production codesign identity's name
     summary: "The production codesign identity's name, for example, `iPhone Distribution: Bitrise Bot (VV2J4SV8V4)`."
 - BITRISE_DEVELOPMENT_PROFILE:
   opts:
-    title: "The main target's development provisioning profile UUID"
-    summary: "The development provisioning profile's UUID which belongs to the main target, for example, `c5be4123-1234-4f9d-9843-0d9be985a068`."
+    title: The main target's development provisioning profile UUID
+    summary: The development provisioning profile's UUID which belongs to the main target, for example, `c5be4123-1234-4f9d-9843-0d9be985a068`.
 - BITRISE_PRODUCTION_PROFILE:
   opts:
-    title: "The main target's production provisioning profile UUID"
-    summary: "The production provisioning profile's UUID which belongs to the main target, for example, `c5be4123-1234-4f9d-9843-0d9be985a068`."
+    title: The main target's production provisioning profile UUID
+    summary: The production provisioning profile's UUID which belongs to the main target, for example, `c5be4123-1234-4f9d-9843-0d9be985a068`.
