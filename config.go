@@ -76,22 +76,13 @@ func splitAndClean(list string, sep string, omitEmpty bool) (items []string) {
 
 func parseAuthSources(bitriseConnection string) ([]appleauth.Source, error) {
 	switch bitriseConnection {
-	case "automatic":
-		return []appleauth.Source{
-			&appleauth.ConnectionAPIKeySource{},
-			&appleauth.InputAPIKeySource{},
-		}, nil
-	case "api_key":
+	case "api-key":
 		return []appleauth.Source{
 			&appleauth.ConnectionAPIKeySource{},
 		}, nil
-	case "apple_id", "apple-id", "enterprise_with_apple_id", "enterprise-with-apple-id":
+	case "apple-id":
 		return []appleauth.Source{
 			&appleauth.ConnectionAppleIDFastlaneSource{},
-		}, nil
-	case "off":
-		return []appleauth.Source{
-			&appleauth.InputAPIKeySource{},
 		}, nil
 	default:
 		return nil, fmt.Errorf("invalid connection input: %s", bitriseConnection)
