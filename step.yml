@@ -119,7 +119,7 @@ inputs:
       Specify as many passphrases as many Code signing certificate URL provided, separated by a pipe (|) character.
     is_required: true
     is_sensitive: true
-- keychain_path: $BITRISE_KEYCHAIN_PATH
+- keychain_path: $HOME/Library/Keychains/login.keychain
   opts:
     title: Keychain path
     summary: Path to the Keychain where the code signing certificates will be installed.

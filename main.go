@@ -58,29 +58,29 @@ func main() {
 	}
 
 	// Create Apple developer Portal client
-	authSources, err := parseAuthSources(cfg.BitriseConnection)
+	clientType, err := parseClientType(cfg.BitriseConnection)
 	if err != nil {
 		failf("Invalid input: unexpected value for Bitrise Apple Developer Connection (%s)", cfg.BitriseConnection)
 	}
 
-	var connection *devportalservice.AppleDeveloperConnection
+	var connection devportalservice.AppleDeveloperConnection
 	isRunningOnBitrise := cfg.BuildURL != "" && cfg.BuildAPIToken != ""
 
 	switch {
-	case cfg.BitriseConnection != "off" && !isRunningOnBitrise:
+	case !isRunningOnBitrise:
 		fmt.Println()
 		log.Warnf("Connected Apple Developer Portal Account not found. Step is not running on bitrise.io: BITRISE_BUILD_URL and BITRISE_BUILD_API_TOKEN envs are not set")
-	case cfg.BitriseConnection != "off":
+	default:
 		f := devportalclient.NewClientFactory()
 		c, err := f.CreateBitriseConnection(cfg.BuildURL, cfg.BuildAPIToken)
 		if err != nil {
 			failf(err.Error())
 		}
-
-		connection = &c
+		connection = c
 	}
 
-	devPortalClient, err := createClient(authSources, appLayout.TeamID, connection)
+	devPortalClientFactory := devportalclient.NewClientFactory()
+	devPortalClient, err := devPortalClientFactory.CreateClient(clientType, appLayout.TeamID, connection)
 	if err != nil {
 		failf(err.Error())
 	}
@@ -97,7 +97,7 @@ func main() {
 	// Auto codesign
 	distribution := cfg.DistributionType()
 	var testDevices []devportalservice.TestDevice
-	if cfg.RegisterTestDevices && connection != nil {
+	if cfg.RegisterTestDevices {
 		testDevices = connection.TestDevices
 	}
 	codesignAssetsByDistributionType, err := manager.EnsureCodesignAssets(appLayout, autocodesign.CodesignAssetsOpts{
