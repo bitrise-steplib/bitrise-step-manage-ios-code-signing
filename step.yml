@@ -1,10 +1,10 @@
-title: TODO
+title: Manage iOS Code Signing
 summary: TODO
 description: |-
   TODO
-website: https://github.com/bitrise-steplib/bitrise-step-ios-automatic-code-signing
-source_code_url: https://github.com/bitrise-steplib/bitrise-step-ios-automatic-code-signing
-support_url: https://github.com/bitrise-steplib/bitrise-step-ios-automatic-code-signing/issues
+website: https://github.com/bitrise-steplib/bitrise-step-manage-ios-code-signing
+source_code_url: https://github.com/bitrise-steplib/bitrise-step-manage-ios-code-signing
+support_url: https://github.com/bitrise-steplib/bitrise-step-manage-ios-code-signing/issues
 
 project_type_tags:
 - ios
@@ -20,7 +20,7 @@ run_if: .IsCI
 
 toolkit:
   go:
-    package_name: github.com/bitrise-steplib/bitrise-step-ios-automatic-code-signing
+    package_name: github.com/bitrise-steplib/bitrise-step-manage-ios-code-signing
 
 # TODO figure out categories
 

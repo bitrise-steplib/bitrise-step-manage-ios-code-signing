@@ -69,7 +69,8 @@ func main() {
 	switch {
 	case !isRunningOnBitrise:
 		fmt.Println()
-		log.Warnf("Connected Apple Developer Portal Account not found. Step is not running on bitrise.io: BITRISE_BUILD_URL and BITRISE_BUILD_API_TOKEN envs are not set")
+		failf(`Connected Apple Developer Portal Account not found. Step is not running on bitrise.io: BITRISE_BUILD_URL and BITRISE_BUILD_API_TOKEN envs are not set.
+               For testing purposes please provide BITRISE_BUILD_URL as json file (file://path-to-json) while setting BITRISE_BUILD_API_TOKEN to any non-empty string`)
 	default:
 		f := devportalclient.NewClientFactory()
 		c, err := f.CreateBitriseConnection(cfg.BuildURL, cfg.BuildAPIToken)

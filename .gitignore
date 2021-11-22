@@ -4,4 +4,4 @@ _tmp/
 apple_developer_portal_data*.json
 .idea
 .bundle
-bitrise-step-ios-automatic-code-signing
+bitrise-step-manage-ios-code-signing

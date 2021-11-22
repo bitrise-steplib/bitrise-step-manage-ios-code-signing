@@ -14,7 +14,7 @@ workflows:
   # Preconditions: the sample project's (https://github.com/bitrise-io/Fruta.git) App Clip target
   # needs to have an Application Identifier on the Apple Developer Portal, with all the required capabilities set.
   # Reasons can be found here:
-  # - https://github.com/bitrise-steplib/bitrise-step-ios-automatic-code-signing/pull/79
+  # - https://github.com/bitrise-steplib/bitrise-step-manage-ios-code-signing/pull/79
   # - https://github.com/bitrise-io/go-xcode/pull/125
   test_appclip:
     before_run:

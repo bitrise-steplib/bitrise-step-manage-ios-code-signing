@@ -1,4 +1,4 @@
-module github.com/bitrise-steplib/bitrise-step-ios-automatic-code-signing
+module github.com/bitrise-steplib/bitrise-step-manage-ios-code-signing
 
 go 1.16
 

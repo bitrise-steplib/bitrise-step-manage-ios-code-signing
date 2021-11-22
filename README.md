@@ -1,6 +1,6 @@
 # TODO
 
-[![Step changelog](https://shields.io/github/v/release/bitrise-steplib/bitrise-step-ios-automatic-code-signing?include_prereleases&label=changelog&color=blueviolet)](https://github.com/bitrise-steplib/bitrise-step-ios-automatic-code-signing/releases)
+[![Step changelog](https://shields.io/github/v/release/bitrise-steplib/bitrise-step-manage-ios-code-signing?include_prereleases&label=changelog&color=blueviolet)](https://github.com/bitrise-steplib/bitrise-step-manage-ios-code-signing/releases)
 
 TODO
 
@@ -55,7 +55,7 @@ You can also run this step directly with [Bitrise CLI](https://github.com/bitris
 
 ## 🙋 Contributing
 
-We welcome [pull requests](https://github.com/bitrise-steplib/bitrise-step-ios-automatic-code-signing/pulls) and [issues](https://github.com/bitrise-steplib/bitrise-step-ios-automatic-code-signing/issues) against this repository.
+We welcome [pull requests](https://github.com/bitrise-steplib/bitrise-step-manage-ios-code-signing/pulls) and [issues](https://github.com/bitrise-steplib/bitrise-step-manage-ios-code-signing/issues) against this repository.
 
 For pull requests, work on your changes in a forked repository and use the Bitrise CLI to [run step tests locally](https://devcenter.bitrise.io/bitrise-cli/run-your-first-build/).
 
