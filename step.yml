@@ -113,7 +113,7 @@ inputs:
     category: Build environment
     title: Code signing certificate URL
     summary: URL of the code signing certificate to download.
-    description: |
+    description: |-
       URL of the code signing certificate to download.
 
       Multiple URLs can be specified, separated by a pipe (|) character.
@@ -127,7 +127,7 @@ inputs:
     category: Build environment
     title: Code signing certificate passphrase
     summary: Passphrases for the provided code signing certificates.
-    description: |
+    description: |-
       Passphrases for the provided code signing certificates.
 
       Specify as many passphrases as many Code signing certificate URL provided, separated by a pipe (|) character.
