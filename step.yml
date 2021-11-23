@@ -22,37 +22,7 @@ toolkit:
   go:
     package_name: github.com/bitrise-steplib/bitrise-step-manage-ios-code-signing
 
-# TODO figure out categories
-
 inputs:
-- distribution_method: development
-  opts:
-    title: Distribution method
-    summary: Describes how Xcode should export the archive.
-    value_options:
-    - development
-    - app-store
-    - ad-hoc
-    - enterprise
-    is_required: true
-- project_path: $BITRISE_PROJECT_PATH
-  opts:
-    title: Project path
-    summary: Xcode Project (.xcodeproj) or Workspace (.xcworkspace) path.
-    is_required: true
-- scheme: $BITRISE_SCHEME
-  opts:
-    title: Scheme
-    summary: Xcode Scheme name.
-    is_required: true
-- configuration:
-  opts:
-    title: Build Configuration
-    summary: Xcode Build Configuration.
-    description: |-
-      Xcode Build Configuration.
-
-      If not specified, the default Build Configuration will be used.
 - apple_service_connection: api-key
   opts:
     title: Apple service connection method
@@ -67,8 +37,53 @@ inputs:
     - api-key
     - apple-id
 
+- distribution_method: development
+  opts:
+    title: Distribution method
+    summary: Describes how Xcode should export the archive.
+    value_options:
+    - development
+    - app-store
+    - ad-hoc
+    - enterprise
+    is_required: true
+
+- project_path: $BITRISE_PROJECT_PATH
+  opts:
+    title: Project path
+    summary: Xcode Project (.xcodeproj) or Workspace (.xcworkspace) path.
+    is_required: true
+
+- scheme: $BITRISE_SCHEME
+  opts:
+    title: Scheme
+    summary: Xcode Scheme name.
+    is_required: true
+
+- configuration:
+  opts:
+    title: Build Configuration
+    summary: Xcode Build Configuration.
+    description: |-
+      Xcode Build Configuration.
+
+      If not specified, the default Build Configuration will be used.
+
+# Options
+
+- sign_uitest_targets: "no"
+  opts:
+    category: Options
+    title: Ensure code signing assets for UITest targets too
+    summary: If this input is set, the Step will manage the codesign assets of the UITest targets (of the main Application) among with the main Application codesign assets.
+    is_required: true
+    value_options:
+    - "yes"
+    - "no"
+
 - register_test_devices: "no"
   opts:
+    category: Options
     title: Register test devices on the Apple Developer Portal
     summary: If this input is set, the Step will register the known test devices on Bitrise from team members with the Apple Developer Portal.
     description: |-
@@ -79,8 +94,10 @@ inputs:
     value_options:
     - "yes"
     - "no"
+
 - min_profile_validity: "0"
   opts:
+    category: Options
     title: The minimum days the Provisioning Profile should be valid
     summary: If this input is set to >0, the managed Provisioning Profile will be renewed if it expires within the configured number of days.
     description: |-
@@ -88,17 +105,12 @@ inputs:
 
       Otherwise the Step renews the managed Provisioning Profile if it is expired.
     is_required: true
-- sign_uitest_targets: "no"
-  opts:
-    title: Ensure code signing assets for UITest targets too
-    summary: If this input is set, the Step will manage the codesign assets of the UITest targets (of the main Application) among with the main Application codesign assets.
-    is_required: true
-    value_options:
-    - "yes"
-    - "no"
+
+# Build environment
 
 - certificate_url_list: $BITRISE_CERTIFICATE_URL
   opts:
+    category: Build environment
     title: Code signing certificate URL
     summary: URL of the code signing certificate to download.
     description: |
@@ -109,8 +121,10 @@ inputs:
       Local file path can be specified, using the file:// URL scheme.
     is_required: true
     is_sensitive: true
+
 - passphrase_list: $BITRISE_CERTIFICATE_PASSPHRASE
   opts:
+    category: Build environment
     title: Code signing certificate passphrase
     summary: Passphrases for the provided code signing certificates.
     description: |
@@ -119,31 +133,42 @@ inputs:
       Specify as many passphrases as many Code signing certificate URL provided, separated by a pipe (|) character.
     is_required: true
     is_sensitive: true
+
 - keychain_path: $HOME/Library/Keychains/login.keychain
   opts:
+    category: Build environment
     title: Keychain path
     summary: Path to the Keychain where the code signing certificates will be installed.
     is_required: true
+
 - keychain_password: $BITRISE_KEYCHAIN_PASSWORD
   opts:
+    category: Build environment
     title: Keychain password
     summary: Password for the provided Keychain.
     is_required: true
     is_sensitive: true
+
 - build_url: $BITRISE_BUILD_URL
   opts:
+    category: Build environment
     title: Bitrise build URL
     summary: URL of the current Bitrise build.
     is_dont_change_value: true
+
 - build_api_token: $BITRISE_BUILD_API_TOKEN
   opts:
+    category: Build environment
     title: Bitrise build API token
     summary: API token to access Bitrise resources during the current build.
     is_sensitive: true
     is_dont_change_value: true
 
+# Debugging
+
 - verbose_log: "no"
   opts:
+    category: Debugging
     title: Verbose logging
     summary: If this input is set, the Step will produce verbose level log messages.
     is_required: true
