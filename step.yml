@@ -1,7 +1,44 @@
 title: Manage iOS Code Signing
-summary: TODO
+summary: Automatically manages your code signing files.
 description: |-
-  TODO
+  The **Manage iOS Code Signing** Step takes care of automatically code signing your project before it's built on Bitrise.
+  The Step:
+  - generates, updates and downloads the provisioning profiles needed for your iOS project.
+  - verifies if your project is registered with the App Store Connect. If it was not, the Step registers your project.
+  - registers the iOS devices connected to your Bitrise account with the App Store Connect.
+  Use the **Manage iOS Code Signing** Step instead of the `xcodebuild` powered **Xcode Archive & Export for iOS** Step to manage your code signing assets if, for example:
+  - You use fastlane for your project.
+  - You use the **Ionic Archive** or the **Cordova Archive** build Steps in your project.
+  - You use a **Script** Step because your project has its own build scripts.
+  The **Manage iOS Code Signing** Step takes care of automatically code signing your project before it's built on Bitrise.
+  The Step:
+  - generates, updates and downloads the provisioning profiles needed for your iOS project.
+  - verifies if your project is registered with the App Store Connect. If it was not, the Step registers your project.
+  - registers the iOS devices connected to your Bitrise account with the App Store Connect.
+
+  ### Configuring the Step
+  Before you start, make sure:
+  - You've generated an API key (and obtained an Issuer ID, Key ID and a Private Key) or an Apple Developer ID.
+  - You've defined your Apple Developer Account to Bitrise.
+  - You've assigned an Apple Developer Account to your app.
+  - Make sure the Step is followed by the **Xcode Archive & Export for iOS** Step if you need a building Step in your Workflow.
+
+  1. **Apple services connection method**: Select the Apple service connection method you provided earlier on Bitrise; which is either the API Key or the Apple ID.
+  2. **Distribution method**: Select the method Xcode should sign your project: development, app-store, ad-hoc, or enterprise.
+  3. **Project path**: Add the path where the Xcode Project or Workspace is located.
+  4. **Scheme**: Add the scheme name you wish to archive your project later.
+  5. **Build configuration**: Add the specified build configuration. If not available, the default build configuration is used.
+  Under **Options**:
+  1. **Ensure code signing assets for UITest targets too**: If this input is set, the Step will manage the codesign settings of the UITest targets of the main Application. The UITest targets' bundle id will be set to the main Application's bundle id, so that the same Signing can be used for both the main Application and related UITest targets.
+  2. **Register test devices on the Apple Developer Portal**: If this input is set, the Step will register known test devices from team members with the Apple Developer Portal. Note that setting this to `yes` may cause devices to be registered against your limited quantity of test devices in the Apple Developer Portal, which can only be removed once annually during your renewal window.
+  Under **Build environment**:
+  You do not have to change any sensitive Environment Variable if all your code signing files are already uploaded to Bitrise. Should you store your code signing files somewhere else (for example, in a private repository), then you can these inputs in the `bitrise.yml` file.
+  Under Debugging:
+  1. **Verbose logging***: You can set this input to `yes` to produce more informative logs.
+
+  ### Troubleshooting:
+  - The **Manage iOS Code Signing** Step will fail if the correct Apple service is not connected to Bitrise or the right connection method is not selected in the **Apple service connection method** input within the Step Please note that with enterprise type Apple accounts you have to use the Apple ID authentication instead of the API key.
+  - The **Manage iOS Code Signing** Step will fail if the right code signing certificates are not uploaded to Bitrise.
 website: https://github.com/bitrise-steplib/bitrise-step-manage-ios-code-signing
 source_code_url: https://github.com/bitrise-steplib/bitrise-step-manage-ios-code-signing
 support_url: https://github.com/bitrise-steplib/bitrise-step-manage-ios-code-signing/issues
