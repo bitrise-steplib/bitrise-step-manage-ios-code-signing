@@ -17,7 +17,7 @@ description: |-
   - You've generated an API key (and obtained an Issuer ID, Key ID and a Private Key) and registered an Apple Developer ID.
   - You've defined your Apple Developer Account to Bitrise.
   - You've assigned an Apple Developer Account to your app.
-  - Make sure the Step is followed by the **Xcode Archive & Export for iOS** Step if you need a building Step in your Workflow.
+  - Make sure the Step is followed by another Step that needs iOS code signing.
 
   1. **Apple services connection method**: Select the Apple service connection method you provided earlier on Bitrise; which is either the API Key or the Apple ID.
   2. **Distribution method**: Select the method Xcode should sign your project: development, app-store, ad-hoc, or enterprise.
