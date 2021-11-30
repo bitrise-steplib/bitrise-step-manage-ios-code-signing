@@ -6,7 +6,8 @@ description: |-
   - Generates, updates and downloads the provisioning profiles needed for your iOS project.
   - Verifies and registers the project's Bundle IDs on the Apple Developer Site.
   - Manages code signing assets for iOS and tvOS too.
-  Use the **Manage iOS Code Signing** Step instead of the `xcodebuild` powered **Xcode Archive & Export for iOS** Step to manage your code signing assets if, for example:
+
+  Use the **Manage iOS Code Signing** Step if, for example:
   - You use fastlane for your project.
   - You use the **Ionic Archive** or the **Cordova Archive** build Steps in your project.
   - You use a **Script** Step because your project has its own build scripts.
@@ -24,12 +25,15 @@ description: |-
   3. **Project path**: Add the path where the Xcode Project or Workspace is located.
   4. **Scheme**: Add the scheme name you wish to archive your project later.
   5. **Build configuration**:Specify Xcode Build Configuration. The Step will use the provided Build Configuration's Build Settings, to understand your project's code signing configuration. If not provided, the Archive action's default Build Configuration will be used.
+
   Under **Options**:
   1. **Ensure code signing assets for UITest targets too**: If this input is set, the Step will manage the codesign settings of the UITest targets of the main Application.
   2. **Register test devices on the Apple Developer Portal**: If this input is set, the Step will register known test devices from team members with the Apple Developer Portal. Note that setting this to `yes` may cause devices to be registered against your limited quantity of test devices in the Apple Developer Portal, which can only be removed once annually during your renewal window.
+
   Under **Build environment**:
   You do not have to change any sensitive Environment Variable if all your certificates are already uploaded to Bitrise. Should you store your code signing files somewhere else (for example, in a private repository), then you can these inputs in the `bitrise.yml` file.
-  Under Debugging:
+
+  Under **Debugging**:
   1. **Verbose logging***: You can set this input to `yes` to produce more informative logs.
 
   ### Troubleshooting:
