@@ -2,12 +2,49 @@
 
 [![Step changelog](https://shields.io/github/v/release/bitrise-steplib/bitrise-step-manage-ios-code-signing?include_prereleases&label=changelog&color=blueviolet)](https://github.com/bitrise-steplib/bitrise-step-manage-ios-code-signing/releases)
 
-TODO
+Automatically manage code signing assets before a build.
 
 <details>
 <summary>Description</summary>
 
-TODO
+The **Manage iOS Code Signing** Step takes care of setting up the required code signing assets before the project is built on Bitrise.
+The Step:
+- Downloads and installs certificates uploaded to Bitrise.
+- Generates, updates and downloads the provisioning profiles needed for your iOS project.
+- Verifies and registers the project's Bundle IDs on the Apple Developer Site.
+- Registers the iOS or tvOS devices connected to your Bitrise account with the Apple Developer Site.
+
+Use the **Manage iOS Code Signing** Step if, for example:
+- You use Fastlane for your project.
+- You use the **Ionic Archive** or the **Cordova Archive** build Steps in your project.
+- You use a **Script** Step because your project has its own build scripts.
+The **Manage iOS Code Signing** Step takes care of automatically code signing your project before it's built on Bitrise.
+
+### Configuring the Step
+Before you start, make sure:
+- You've defined your Apple Developer Account to Bitrise.
+- You've assigned an Apple Developer Account to your app.
+- Make sure the Step is followed by another Step that needs iOS code signing.
+
+1. **Apple services connection method**: Select the Apple service connection method you provided earlier on Bitrise; which is either the API Key or the Apple ID.
+2. **Distribution method**: Select the method Xcode should sign your project: development, app-store, ad-hoc, or enterprise.
+3. **Project path**: Add the path where the Xcode Project or Workspace is located.
+4. **Scheme**: Add the scheme name you wish to archive your project later.
+5. **Build configuration**:Specify Xcode Build Configuration. The Step will use the provided Build Configuration's Build Settings, to understand your project's code signing configuration. If not provided, the Archive action's default Build Configuration will be used.
+
+Under **Options**:
+1. **Ensure code signing assets for UITest targets too**: If this input is set, the Step will manage the codesign settings of the UITest targets of the main Application.
+2. **Register test devices on the Apple Developer Portal**: If this input is set, the Step will register known test devices from team members with the Apple Developer Portal. Note that setting this to `yes` may cause devices to be registered against your limited quantity of test devices in the Apple Developer Portal, which can only be removed once annually during your renewal window.
+
+Under **Build environment**:
+You do not have to change any sensitive Environment Variable if all your certificates are already uploaded to Bitrise. Should you store your code signing files somewhere else (for example, in a private repository), then you can these inputs in the `bitrise.yml` file.
+
+Under **Debugging**:
+1. **Verbose logging***: You can set this input to `yes` to produce more informative logs.
+
+### Troubleshooting:
+- The **Manage iOS Code Signing** Step will fail if the correct Apple Developer Account is not connected to Bitrise or the right connection method is not selected in the **Apple service connection method** input within the Step.
+- The **Manage iOS Code Signing** Step will also fail if the right code signing certificates are not uploaded to Bitrise. A Development type certificate is needed if the **Distribution method** input is set to `development`, otherwise a Distribution type certificate is needed. We recommend you upload one Development and one Distribution certificate, so that the Step can ensure code signing files for all the distribution methods.
 </details>
 
 ## 🧩 Get started
