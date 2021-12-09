@@ -15,7 +15,9 @@ import (
 	"github.com/bitrise-io/go-xcode/autocodesign/codesignasset"
 	"github.com/bitrise-io/go-xcode/autocodesign/devportalclient"
 	"github.com/bitrise-io/go-xcode/autocodesign/keychain"
+	"github.com/bitrise-io/go-xcode/autocodesign/localcodesignasset"
 	"github.com/bitrise-io/go-xcode/autocodesign/projectmanager"
+	"github.com/bitrise-io/go-xcode/codesign"
 	"github.com/bitrise-io/go-xcode/devportalservice"
 )
 
@@ -33,16 +35,15 @@ func main() {
 	}
 	stepconf.Print(cfg)
 
-	log.SetEnableDebugLog(cfg.VerboseLog)
+	logger := log.NewLogger()
+	logger.EnableDebugLog(cfg.VerboseLog)
+	log.SetEnableDebugLog(cfg.VerboseLog) // for compatibility
 
-	certsWithPrivateKey, err := cfg.Certificates()
-	if err != nil {
-		failf("Failed to convert certificate URLs: %s", err)
-	}
+	cmdFactory := command.NewFactory(env.NewRepository())
 
 	// Analyze project
 	fmt.Println()
-	log.Infof("Analyzing project")
+	logger.Infof("Analyzing project")
 	project, err := projectmanager.NewProject(projectmanager.InitParams{
 		ProjectOrWorkspacePath: cfg.ProjectPath,
 		SchemeName:             cfg.Scheme,
@@ -58,12 +59,12 @@ func main() {
 	}
 
 	// Create Apple developer Portal client
-	clientType, err := parseClientType(cfg.BitriseConnection)
+	authType, err := parseAuthType(cfg.BitriseConnection)
 	if err != nil {
 		failf("Invalid input: unexpected value for Bitrise Apple Developer Connection (%s)", cfg.BitriseConnection)
 	}
 
-	var connection devportalservice.AppleDeveloperConnection
+	var connection *devportalservice.AppleDeveloperConnection
 	isRunningOnBitrise := cfg.BuildURL != "" && cfg.BuildAPIToken != ""
 
 	switch {
@@ -72,7 +73,7 @@ func main() {
 		failf(`Connected Apple Developer Portal Account not found. Step is not running on bitrise.io: BITRISE_BUILD_URL and BITRISE_BUILD_API_TOKEN envs are not set.
                For testing purposes please provide BITRISE_BUILD_URL as json file (file://path-to-json) while setting BITRISE_BUILD_API_TOKEN to any non-empty string`)
 	default:
-		f := devportalclient.NewClientFactory()
+		f := devportalclient.NewFactory(logger)
 		c, err := f.CreateBitriseConnection(cfg.BuildURL, cfg.BuildAPIToken)
 		if err != nil {
 			failf(err.Error())
@@ -80,20 +81,41 @@ func main() {
 		connection = c
 	}
 
-	devPortalClientFactory := devportalclient.NewClientFactory()
-	devPortalClient, err := devPortalClientFactory.CreateClient(clientType, appLayout.TeamID, connection)
+	codesignInputs := codesign.Input{
+		AuthType:                  authType,
+		DistributionMethod:        cfg.Distribution,
+		CertificateURLList:        cfg.CertificateURLList,
+		CertificatePassphraseList: cfg.CertificatePassphraseList,
+		KeychainPath:              cfg.KeychainPath,
+		KeychainPassword:          cfg.KeychainPassword,
+	}
+
+	codesignConfig, err := codesign.ParseConfig(codesignInputs, cmdFactory)
+	if err != nil {
+		failf(err.Error())
+	}
+	appleAuthCredentials, err := codesign.SelectConnectionCredentials(authType, connection, logger)
+	if err != nil {
+		failf(err.Error())
+	}
+
+	keychain, err := keychain.New(cfg.KeychainPath, cfg.KeychainPassword, cmdFactory)
+	if err != nil {
+		failf(fmt.Sprintf("failed to initialize keychain: %s", err))
+	}
+
+	devPortalClientFactory := devportalclient.NewFactory(logger)
+	certDownloader := certdownloader.NewDownloader(codesignConfig.CertificatesAndPassphrases, retry.NewHTTPClient().StandardClient())
+	assetWriter := codesignasset.NewWriter(*keychain)
+	localCodesignAssetManager := localcodesignasset.NewManager(localcodesignasset.NewProvisioningProfileProvider(), localcodesignasset.NewProvisioningProfileConverter())
+
+	devPortalClient, err := devPortalClientFactory.Create(appleAuthCredentials, appLayout.TeamID)
 	if err != nil {
 		failf(err.Error())
 	}
 
 	// Create codesign manager
-	keychain, err := keychain.New(cfg.KeychainPath, cfg.KeychainPassword, command.NewFactory(env.NewRepository()))
-	if err != nil {
-		failf(fmt.Sprintf("failed to initialize keychain: %s", err))
-	}
-
-	certDownloader := certdownloader.NewDownloader(certsWithPrivateKey, retry.NewHTTPClient().StandardClient())
-	manager := autocodesign.NewCodesignAssetManager(devPortalClient, certDownloader, codesignasset.NewWriter(*keychain))
+	manager := autocodesign.NewCodesignAssetManager(devPortalClient, certDownloader, assetWriter, localCodesignAssetManager)
 
 	// Auto codesign
 	distribution := cfg.DistributionType()
@@ -117,7 +139,7 @@ func main() {
 
 	// Export output
 	fmt.Println()
-	log.Infof("Exporting outputs")
+	logger.Infof("Exporting outputs")
 
 	teamID := codesignAssetsByDistributionType[distribution].Certificate.TeamID
 	outputs := map[string]string{
@@ -162,7 +184,7 @@ func main() {
 	}
 
 	for k, v := range outputs {
-		log.Donef("%s=%s", k, v)
+		logger.Donef("%s=%s", k, v)
 		if err := tools.ExportEnvironmentWithEnvman(k, v); err != nil {
 			failf("Failed to export %s=%s: %s", k, v, err)
 		}

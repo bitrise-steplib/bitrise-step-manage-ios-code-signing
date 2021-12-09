@@ -22,6 +22,7 @@ github.com/bitrise-io/go-utils/pointers
 github.com/bitrise-io/go-utils/pretty
 github.com/bitrise-io/go-utils/retry
 github.com/bitrise-io/go-utils/sliceutil
+github.com/bitrise-io/go-utils/ziputil
 # github.com/bitrise-io/go-xcode v0.0.0-20211209092209-c3c81d943b57
 ## explicit
 github.com/bitrise-io/go-xcode/appleauth
@@ -33,12 +34,17 @@ github.com/bitrise-io/go-xcode/autocodesign/devportalclient/appstoreconnect
 github.com/bitrise-io/go-xcode/autocodesign/devportalclient/appstoreconnectclient
 github.com/bitrise-io/go-xcode/autocodesign/devportalclient/spaceship
 github.com/bitrise-io/go-xcode/autocodesign/keychain
+github.com/bitrise-io/go-xcode/autocodesign/localcodesignasset
 github.com/bitrise-io/go-xcode/autocodesign/projectmanager
 github.com/bitrise-io/go-xcode/certificateutil
+github.com/bitrise-io/go-xcode/codesign
 github.com/bitrise-io/go-xcode/devportalservice
 github.com/bitrise-io/go-xcode/exportoptions
+github.com/bitrise-io/go-xcode/models
 github.com/bitrise-io/go-xcode/plistutil
 github.com/bitrise-io/go-xcode/profileutil
+github.com/bitrise-io/go-xcode/utility
+github.com/bitrise-io/go-xcode/xcarchive
 github.com/bitrise-io/go-xcode/xcodebuild
 github.com/bitrise-io/go-xcode/xcodeproject/schemeint
 github.com/bitrise-io/go-xcode/xcodeproject/serialized
