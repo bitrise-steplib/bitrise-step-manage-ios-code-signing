@@ -57,8 +57,6 @@ github.com/bitrise-io/pkcs12
 github.com/bitrise-io/pkcs12/internal/rc2
 # github.com/davecgh/go-spew v1.1.1
 github.com/davecgh/go-spew/spew
-# github.com/dgrijalva/jwt-go v3.2.0+incompatible
-## explicit
 # github.com/fullsailor/pkcs7 v0.0.0-20190404230743-d7302db945fa
 github.com/fullsailor/pkcs7
 # github.com/golang-jwt/jwt/v4 v4.1.0
