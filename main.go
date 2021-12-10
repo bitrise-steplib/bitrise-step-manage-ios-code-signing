@@ -109,7 +109,7 @@ func main() {
 	assetWriter := codesignasset.NewWriter(*keychain)
 	localCodesignAssetManager := localcodesignasset.NewManager(localcodesignasset.NewProvisioningProfileProvider(), localcodesignasset.NewProvisioningProfileConverter())
 
-	devPortalClient, err := devPortalClientFactory.Create(appleAuthCredentials, appLayout.TeamID)
+	devPortalClient, err := devPortalClientFactory.Create(appleAuthCredentials, cfg.TeamID)
 	if err != nil {
 		failf(err.Error())
 	}

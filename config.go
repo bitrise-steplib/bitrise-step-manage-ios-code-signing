@@ -19,9 +19,10 @@ type Config struct {
 
 	BitriseConnection string `env:"apple_service_connection,opt[api-key,apple-id]"`
 
-	RegisterTestDevices bool `env:"register_test_devices,opt[yes,no]"`
-	MinProfileDaysValid int  `env:"min_profile_validity,required"`
-	SignUITestTargets   bool `env:"sign_uitest_targets,opt[yes,no]"`
+	RegisterTestDevices bool   `env:"register_test_devices,opt[yes,no]"`
+	MinProfileDaysValid int    `env:"min_profile_validity,required"`
+	SignUITestTargets   bool   `env:"sign_uitest_targets,opt[yes,no]"`
+	TeamID              string `env:"apple_team_id"`
 
 	CertificateURLList        string          `env:"certificate_url_list,required"`
 	CertificatePassphraseList stepconf.Secret `env:"passphrase_list,required"`

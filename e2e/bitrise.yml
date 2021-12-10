@@ -5,6 +5,7 @@ app:
   envs:
   # Shared test configs
   - BITRISE_KEYCHAIN_PATH: $HOME/Library/Keychains/login.keychain
+  - TEAM_ID: 72SA8V3WYL
   # Shared test secrets
   - BITRISE_KEYCHAIN_PASSWORD: $BITRISE_KEYCHAIN_PASSWORD
   - BITFALL_APPLE_IOS_CERTIFICATE_URL_LIST: $BITFALL_APPLE_IOS_CERTIFICATE_URL_LIST
@@ -302,6 +303,7 @@ workflows:
         - keychain_path: $BITRISE_KEYCHAIN_PATH
         - keychain_password: $BITRISE_KEYCHAIN_PASSWORD
         - verbose_log: "yes"
+        - apple_team_id: $TEAM_ID
 
   _run_with_apple_id:
     steps:
