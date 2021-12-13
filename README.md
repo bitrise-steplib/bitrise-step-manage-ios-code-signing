@@ -37,7 +37,7 @@ Under **Options**:
 2. **Register test devices on the Apple Developer Portal**: If this input is set, the Step will register known test devices from team members with the Apple Developer Portal. Note that setting this to `yes` may cause devices to be registered against your limited quantity of test devices in the Apple Developer Portal, which can only be removed once annually during your renewal window.
 
 Under **Build environment**:
-You do not have to change any sensitive Environment Variable if all your certificates are already uploaded to Bitrise. Should you store your code signing files somewhere else (for example, in a private repository), then you can these inputs in the `bitrise.yml` file.
+You do not have to change any sensitive Environment Variable if all your certificates are already uploaded to Bitrise. Should you store your code signing files somewhere else (for example, in a private repository), then you can set these inputs in the `bitrise.yml` file.
 
 Under **Debugging**:
 1. **Verbose logging***: You can set this input to `yes` to produce more informative logs.
@@ -68,6 +68,7 @@ You can also run this step directly with [Bitrise CLI](https://github.com/bitris
 | `sign_uitest_targets` | If this input is set, the Step will manage the codesign assets of the UITest targets (of the main Application) among with the main Application codesign assets. | required | `no` |
 | `register_test_devices` | If this input is set, the Step will register the known test devices on Bitrise from team members with the Apple Developer Portal.  Note that setting this to yes may cause devices to be registered against your limited quantity of test devices in the Apple Developer Portal, which can only be removed once annually during your renewal window. | required | `no` |
 | `min_profile_validity` | If this input is set to >0, the managed Provisioning Profile will be renewed if it expires within the configured number of days.  Otherwise the Step renews the managed Provisioning Profile if it is expired. | required | `0` |
+| `apple_team_id` | The Apple Developer Portal team to use for downloading code signing assets.  Defining this is only required when Apple Service Connection method is set to `apple-id` and the connected account belongs to multiple teams. |  |  |
 | `certificate_url_list` | URL of the code signing certificate to download.  Multiple URLs can be specified, separated by a pipe (\|) character.  Local file path can be specified, using the file:// URL scheme. | required, sensitive | `$BITRISE_CERTIFICATE_URL` |
 | `passphrase_list` | Passphrases for the provided code signing certificates.  Specify as many passphrases as many Code signing certificate URL provided, separated by a pipe (\|) character. | required, sensitive | `$BITRISE_CERTIFICATE_PASSPHRASE` |
 | `keychain_path` | Path to the Keychain where the code signing certificates will be installed. | required | `$HOME/Library/Keychains/login.keychain` |
