@@ -9,4 +9,5 @@ require (
 	github.com/bitrise-io/go-utils/v2 v2.0.0-alpha.1
 	github.com/bitrise-io/go-xcode v1.0.1
 	github.com/bitrise-io/go-xcode/v2 v2.0.0-alpha.3
+	github.com/hashicorp/go-version v1.4.0 // indirect
 )
