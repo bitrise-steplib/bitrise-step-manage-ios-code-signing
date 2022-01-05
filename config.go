@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/bitrise-io/go-steputils/stepconf"
+	"github.com/bitrise-io/go-steputils/v2/stepconf"
 	"github.com/bitrise-io/go-utils/sliceutil"
-	"github.com/bitrise-io/go-xcode/autocodesign"
-	"github.com/bitrise-io/go-xcode/codesign"
+	"github.com/bitrise-io/go-xcode/v2/autocodesign"
+	"github.com/bitrise-io/go-xcode/v2/codesign"
 )
 
 // Config holds the step inputs
