@@ -52,7 +52,7 @@ func main() {
 
 	logger.Println()
 	if xcodebuildVersion.MajorVersion >= 11 {
-		// Resolve Swift package dependencies, so running -showBuildSettings later is faster later
+		// Resolve Swift package dependencies, so running -showBuildSettings is faster
 		// Specifying a scheme is required for workspaces
 		resolveDepsCmd := xcodebuild.NewResolvePackagesCommandModel(cfg.ProjectPath, cfg.Scheme, cfg.Configuration)
 		if err := resolveDepsCmd.Run(); err != nil {
