@@ -12,6 +12,7 @@ import (
 	"github.com/bitrise-io/go-utils/v2/env"
 	"github.com/bitrise-io/go-utils/v2/log"
 	"github.com/bitrise-io/go-xcode/devportalservice"
+	"github.com/bitrise-io/go-xcode/utility"
 	"github.com/bitrise-io/go-xcode/v2/autocodesign"
 	"github.com/bitrise-io/go-xcode/v2/autocodesign/certdownloader"
 	"github.com/bitrise-io/go-xcode/v2/autocodesign/codesignasset"
@@ -20,6 +21,7 @@ import (
 	"github.com/bitrise-io/go-xcode/v2/autocodesign/localcodesignasset"
 	"github.com/bitrise-io/go-xcode/v2/autocodesign/projectmanager"
 	"github.com/bitrise-io/go-xcode/v2/codesign"
+	"github.com/bitrise-io/go-xcode/xcodebuild"
 )
 
 func failf(format string, args ...interface{}) {
@@ -41,6 +43,22 @@ func main() {
 	v1log.SetEnableDebugLog(cfg.VerboseLog) // for compatibility
 
 	cmdFactory := command.NewFactory(env.NewRepository())
+
+	xcodebuildVersion, err := utility.GetXcodeVersion()
+	if err != nil {
+		failf("Failed to determine Xcode version: %s", err)
+	}
+	logger.Printf("%s (%s)", xcodebuildVersion.Version, xcodebuildVersion.BuildVersion)
+
+	logger.Println()
+	if xcodebuildVersion.MajorVersion >= 11 {
+		// Resolve Swift package dependencies, so running -showBuildSettings later is faster later
+		// Specifying a scheme is required for workspaces
+		resolveDepsCmd := xcodebuild.NewResolvePackagesCommandModel(cfg.ProjectPath, cfg.Scheme, cfg.Configuration)
+		if err := resolveDepsCmd.Run(); err != nil {
+			logger.Warnf("%s", err)
+		}
+	}
 
 	// Analyze project
 	fmt.Println()
