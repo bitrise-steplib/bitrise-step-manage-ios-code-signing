@@ -25,7 +25,7 @@ workflows:
     - git::https://github.com/bitrise-steplib/bitrise-step-simple-git-clone.git@master:
         inputs:
         - repository_url: https://github.com/bitrise-io/sample-apps-ios-simple-objc.git
-        - branch: master
+        - branch: bundle_id
         - clone_into_dir: ./_tmp
     - path::./:
         title: Step Test
