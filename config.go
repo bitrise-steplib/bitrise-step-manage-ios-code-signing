@@ -25,7 +25,7 @@ type Config struct {
 	TeamID              string `env:"apple_team_id"`
 
 	CertificateURLList        string          `env:"certificate_url_list,required"`
-	CertificatePassphraseList stepconf.Secret `env:"passphrase_list,required"`
+	CertificatePassphraseList stepconf.Secret `env:"passphrase_list"`
 	KeychainPath              string          `env:"keychain_path,required"`
 	KeychainPassword          stepconf.Secret `env:"keychain_password,required"`
 	BuildAPIToken             string          `env:"build_api_token"`
