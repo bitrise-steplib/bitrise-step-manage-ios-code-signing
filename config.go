@@ -2,10 +2,8 @@ package main
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/bitrise-io/go-steputils/v2/stepconf"
-	"github.com/bitrise-io/go-utils/sliceutil"
 	"github.com/bitrise-io/go-xcode/v2/autocodesign"
 	"github.com/bitrise-io/go-xcode/v2/codesign"
 )
@@ -37,23 +35,6 @@ type Config struct {
 // DistributionType ...
 func (c Config) DistributionType() autocodesign.DistributionType {
 	return autocodesign.DistributionType(c.Distribution)
-}
-
-// ValidateCertificates validates if the number of certificate URLs matches those of passphrases
-func (c Config) ValidateCertificates() ([]string, []string, error) {
-	pfxURLs := splitAndClean(c.CertificateURLList, "|", true)
-	passphrases := splitAndClean(string(c.CertificatePassphraseList), "|", false)
-
-	if len(pfxURLs) != len(passphrases) {
-		return nil, nil, fmt.Errorf("certificates count (%d) and passphrases count (%d) should match", len(pfxURLs), len(passphrases))
-	}
-
-	return pfxURLs, passphrases, nil
-}
-
-// SplitAndClean ...
-func splitAndClean(list string, sep string, omitEmpty bool) (items []string) {
-	return sliceutil.CleanWhitespace(strings.Split(list, sep), omitEmpty)
 }
 
 func parseAuthType(bitriseConnection string) (codesign.AuthType, error) {
