@@ -10,10 +10,11 @@ import (
 
 // Config holds the step inputs
 type Config struct {
-	Distribution  string `env:"distribution_method,opt[development,app-store,ad-hoc,enterprise]"`
-	ProjectPath   string `env:"project_path,dir"`
-	Scheme        string `env:"scheme,required"`
-	Configuration string `env:"configuration"`
+	Distribution  							string `env:"distribution_method,opt[development,app-store,ad-hoc,enterprise]"`
+	ProjectPath   							string `env:"project_path,dir"`
+	Scheme        							string `env:"scheme,required"`
+	Configuration 							string `env:"configuration"`
+	ClonedSourcePackagesDirPath string `env:"clonedSourcePackagesDirPath"`
 
 	BitriseConnection string `env:"apple_service_connection,opt[api-key,apple-id]"`
 
