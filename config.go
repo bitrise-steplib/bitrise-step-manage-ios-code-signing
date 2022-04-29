@@ -14,7 +14,7 @@ type Config struct {
 	ProjectPath   			string `env:"project_path,dir"`
 	Scheme        			string `env:"scheme,required"`
 	Configuration			string `env:"configuration"`
-	ClonedSourcePackagesDirPath 	string `env:"clonedSourcePackagesDirPath"`
+	ClonedSourcePackagesDirPath 	string `env:"cached_source_packages_dir"`
 
 	BitriseConnection string `env:"apple_service_connection,opt[api-key,apple-id]"`
 
