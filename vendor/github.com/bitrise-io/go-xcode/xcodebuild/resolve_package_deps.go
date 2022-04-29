@@ -13,10 +13,10 @@ import (
 // ResolvePackagesCommandModel is a command builder
 // used to create `xcodebuild -resolvePackageDependencies` command
 type ResolvePackagesCommandModel struct {
-	projectPath   							string
-	scheme        							string
-	configuration 							string
-	clonedSourcePackagesDirPath string
+	projectPath   			string
+	scheme        			string
+	configuration 			string
+	clonedSourcePackagesDirPath 	string
 
 	customOptions []string
 }
@@ -24,10 +24,10 @@ type ResolvePackagesCommandModel struct {
 // NewResolvePackagesCommandModel returns a new ResolvePackagesCommandModel
 func NewResolvePackagesCommandModel(projectPath, scheme, configuration string, clonedSourcePackagesDirPath string) *ResolvePackagesCommandModel {
 	return &ResolvePackagesCommandModel{
-		projectPath:   projectPath,
-		scheme:        scheme,
-		configuration: configuration,
-		clonedSourcePackagesDirPath: clonedSourcePackagesDirPath
+		projectPath:   			projectPath,
+		scheme:        			scheme,
+		configuration: 			configuration,
+		clonedSourcePackagesDirPath: 	clonedSourcePackagesDirPath
 	}
 }
 
