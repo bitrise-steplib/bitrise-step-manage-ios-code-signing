@@ -11,6 +11,7 @@ import (
 	"github.com/bitrise-io/go-utils/v2/command"
 	"github.com/bitrise-io/go-utils/v2/env"
 	"github.com/bitrise-io/go-utils/v2/log"
+	"github.com/bitrise-io/go-xcode/certificateutil"
 	"github.com/bitrise-io/go-xcode/devportalservice"
 	"github.com/bitrise-io/go-xcode/utility"
 	"github.com/bitrise-io/go-xcode/v2/autocodesign"
@@ -27,6 +28,26 @@ import (
 func failf(format string, args ...interface{}) {
 	v1log.Errorf(format, args...)
 	os.Exit(1)
+}
+
+func downloadCertificates(certDownloader autocodesign.CertificateProvider, logger log.Logger) ([]certificateutil.CertificateInfoModel, error) {
+	certificates, err := certDownloader.GetCertificates()
+	if err != nil {
+		return nil, fmt.Errorf("failed to download certificates: %s", err)
+	}
+
+	if len(certificates) == 0 {
+		logger.Warnf("No certificates are uploaded.")
+
+		return nil, nil
+	}
+
+	logger.Printf("%d certificates downloaded:", len(certificates))
+	for _, cert := range certificates {
+		logger.Printf("- %s", cert)
+	}
+
+	return certificates, nil
 }
 
 func main() {
@@ -133,8 +154,20 @@ func main() {
 		failf(err.Error())
 	}
 
+	fmt.Println()
+	logger.TDebugf("Downloading certificates")
+	certs, err := downloadCertificates(certDownloader, logger)
+	if err != nil {
+		failf(err.Error())
+	}
+
+	typeToLocalCerts, err := autocodesign.GetValidLocalCertificates(certs)
+	if err != nil {
+		failf(err.Error())
+	}
+
 	// Create codesign manager
-	manager := autocodesign.NewCodesignAssetManager(devPortalClient, certDownloader, assetWriter, localCodesignAssetManager)
+	manager := autocodesign.NewCodesignAssetManager(devPortalClient, assetWriter, localCodesignAssetManager)
 
 	// Auto codesign
 	distribution := cfg.DistributionType()
@@ -143,10 +176,11 @@ func main() {
 		testDevices = connection.TestDevices
 	}
 	codesignAssetsByDistributionType, err := manager.EnsureCodesignAssets(appLayout, autocodesign.CodesignAssetsOpts{
-		DistributionType:       distribution,
-		BitriseTestDevices:     testDevices,
-		MinProfileValidityDays: cfg.MinProfileDaysValid,
-		VerboseLog:             cfg.VerboseLog,
+		DistributionType:        distribution,
+		TypeToLocalCertificates: typeToLocalCerts,
+		BitriseTestDevices:      testDevices,
+		MinProfileValidityDays:  cfg.MinProfileDaysValid,
+		VerboseLog:              cfg.VerboseLog,
 	})
 	if err != nil {
 		failf(fmt.Sprintf("Automatic code signing failed: %s", err))
