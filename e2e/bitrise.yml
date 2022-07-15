@@ -11,8 +11,36 @@ app:
   - BITFALL_APPLE_IOS_CERTIFICATE_URL_LIST: $BITFALL_APPLE_IOS_CERTIFICATE_URL_LIST
   - BITFALL_APPLE_IOS_CERTIFICATE_PASSPHRASE_LIST: $BITFALL_APPLE_IOS_CERTIFICATE_PASSPHRASE_LIST
   - BITFALL_APPLE_IOS_CERTIFICATE_NOPASSPHRASE_URL: $BITFALL_APPLE_IOS_CERTIFICATE_NOPASSPHRASE_URL
+  - BITFALL_APPSTORECONNECT_API_KEY_URL: $BITFALL_APPSTORECONNECT_API_KEY_URL
+  - BITFALL_APPSTORECONNECT_API_KEY_ID: $BITFALL_APPSTORECONNECT_API_KEY_ID
+  - BITFALL_APPSTORECONNECT_API_KEY_ISSUER_ID: $BITFALL_APPSTORECONNECT_API_KEY_ISSUER_ID
 
 workflows:
+  test_api_key_override:
+    envs:
+    - TEST_APP_URL: https://github.com/bitrise-samples/sample-apps-ios-simple-objc.git
+    - TEST_APP_BRANCH: bundle_id
+    - BITRISE_PROJECT_PATH: ios-simple-objc/ios-simple-objc.xcodeproj
+    - BITRISE_SCHEME: ios-simple-objc
+    - BITRISE_CONFIGURATION: Release
+    - SIGN_UITEST_TARGET: "no"
+    - REGISTER_TEST_DEVICES: "yes"
+    - INSTALL_PODS: "false"
+    - DISTRIBUTION_TYPE: ad-hoc
+    - CONNECTION: api-key
+    - API_KEY_PATH: $BITFALL_APPSTORECONNECT_API_KEY_URL
+    - API_KEY_ID: $BITFALL_APPSTORECONNECT_API_KEY_ID
+    - API_KEY_ISSUER_ID: $BITFALL_APPSTORECONNECT_API_KEY_ISSUER_ID
+    after_run:
+    - _run
+    - _check_outputs
+    - _check_xcode_archive
+    - _run_with_apple_id
+    - _check_outputs
+    - _check_xcode_archive
+
+
+
   # Preconditions: the sample project's (https://github.com/bitrise-io/Fruta.git) App Clip target
   # needs to have an Application Identifier on the Apple Developer Portal, with all the required capabilities set.
   # Reasons can be found here:
@@ -334,6 +362,9 @@ workflows:
         - keychain_password: $BITRISE_KEYCHAIN_PASSWORD
         - verbose_log: "yes"
         - apple_team_id: $TEAM_ID
+        - api_key_path: $API_KEY_PATH
+        - api_key_id: $API_KEY_ID
+        - api_key_issuer_id: $API_KEY_ISSUER_ID
 
   _run_with_apple_id:
     steps:
