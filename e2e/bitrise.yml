@@ -39,8 +39,6 @@ workflows:
     - _check_outputs
     - _check_xcode_archive
 
-
-
   # Preconditions: the sample project's (https://github.com/bitrise-io/Fruta.git) App Clip target
   # needs to have an Application Identifier on the Apple Developer Portal, with all the required capabilities set.
   # Reasons can be found here:
