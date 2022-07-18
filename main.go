@@ -118,39 +118,26 @@ func main() {
 		failf(err.Error())
 	}
 
-	// Create Apple developer Portal client
-	var connection *devportalservice.AppleDeveloperConnection
 	isRunningOnBitrise := cfg.BuildURL != "" && cfg.BuildAPIToken != ""
-	switch {
-	case !isRunningOnBitrise:
+	if !isRunningOnBitrise {
 		fmt.Println()
 		failf(`Connected Apple Developer Portal Account not found. Step is not running on bitrise.io: BITRISE_BUILD_URL and BITRISE_BUILD_API_TOKEN envs are not set.
                For testing purposes please provide BITRISE_BUILD_URL as json file (file://path-to-json) while setting BITRISE_BUILD_API_TOKEN to any non-empty string`)
-	default:
-		if authType == codesign.APIKeyAuth && cfg.APIKeyPath != "" && cfg.APIKeyIssuerID != "" && cfg.APIKeyID != "" {
-			logger.Infof("Overriding App Store Connect API connection with step-provided credentials (api_key_path, api_key_id, api_key_issuer_id)")
-			apiKeyConnection, err := codesign.ParseConnectionOverrideConfig(cfg.APIKeyPath, cfg.APIKeyID, cfg.APIKeyIssuerID)
-			if err != nil {
-				failf("Error with step-provided credentials: %s", err)
-			}
-
-			connection = &devportalservice.AppleDeveloperConnection{
-				APIKeyConnection:      apiKeyConnection,
-				AppleIDConnection:     nil,
-				TestDevices:           nil,
-				DuplicatedTestDevices: nil,
-			}
-		} else {
-			f := devportalclient.NewFactory(logger)
-			c, err := f.CreateBitriseConnection(cfg.BuildURL, cfg.BuildAPIToken)
-			if err != nil {
-				failf(err.Error())
-			}
-			connection = c
-		}
 	}
 
-	appleAuthCredentials, err := codesign.SelectConnectionCredentials(authType, connection, logger)
+	// Create Apple developer Portal client
+	f := devportalclient.NewFactory(logger)
+	connection, err := f.CreateBitriseConnection(cfg.BuildURL, cfg.BuildAPIToken)
+	if err != nil {
+		failf(err.Error())
+	}
+
+	connectionInputs := codesign.ConnectionOverrideInputs{
+		APIKeyPath:     cfg.APIKeyPath,
+		APIKeyID:       cfg.APIKeyID,
+		APIKeyIssuerID: cfg.APIKeyIssuerID,
+	}
+	appleAuthCredentials, err := codesign.SelectConnectionCredentials(authType, connection, connectionInputs, logger)
 	if err != nil {
 		failf(err.Error())
 	}
