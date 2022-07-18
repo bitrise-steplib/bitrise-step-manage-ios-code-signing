@@ -28,6 +28,9 @@ type Config struct {
 	KeychainPassword          stepconf.Secret `env:"keychain_password,required"`
 	BuildAPIToken             string          `env:"build_api_token"`
 	BuildURL                  string          `env:"build_url"`
+	APIKeyPath                stepconf.Secret `env:"api_key_path"`
+	APIKeyID                  string          `env:"api_key_id"`
+	APIKeyIssuerID            string          `env:"api_key_issuer_id"`
 
 	VerboseLog bool `env:"verbose_log,opt[no,yes]"`
 }
