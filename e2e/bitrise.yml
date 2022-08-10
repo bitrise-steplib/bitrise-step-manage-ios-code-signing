@@ -46,9 +46,6 @@ workflows:
     - _run
     - _check_outputs
     - _check_xcode_archive
-    - _run_with_apple_id
-    - _check_outputs
-    - _check_xcode_archive
     - _restore_api_envs
 
   # Preconditions: the sample project's (https://github.com/bitrise-io/Fruta.git) App Clip target
@@ -411,9 +408,6 @@ workflows:
         - configuration: $BITRISE_CONFIGURATION
         - distribution_method: $DISTRIBUTION_TYPE
         - log_formatter: xcodebuild
-    - deploy-to-bitrise-io:
-        inputs:
-        - notify_user_groups: none
 
   _check_xcode_build_for_test:
     steps:
@@ -423,9 +417,6 @@ workflows:
         - scheme: $BITRISE_SCHEME
         - configuration: Debug
         - log_formatter: xcodebuild
-    - deploy-to-bitrise-io:
-        inputs:
-        - notify_user_groups: none
 
   _expose_xcode_version:
     steps:
