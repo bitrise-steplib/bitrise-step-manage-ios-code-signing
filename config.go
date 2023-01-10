@@ -53,24 +53,27 @@ func parseAuthType(bitriseConnection string) (codesign.AuthType, error) {
 	}
 }
 
-func parseTemplateName(tempalteName string) (map[autocodesign.DistributionType]string, error) {
-	lines := strings.Split(tempalteName, "\n")
+func parseTemplateName(names string) (map[autocodesign.DistributionType]string, error) {
+	lines := strings.Split(names, "\n")
 
 	distributionToTemplate := make(map[autocodesign.DistributionType]string)
 	for _, line := range lines {
 		parts := strings.SplitN(line, ":", 2)
-		if len(parts) < 2 {
-			return nil, fmt.Errorf("invalid Provisioning Profile template name format (%s), example of expected format: `development: Dev Template`", tempalteName)
+		if len(parts) < 1 {
+			return nil, fmt.Errorf("invalid Provisioning Profile template name format (%s), example of expected format: `development: Dev Template\napp-store: Dist Template`", names)
 		}
 
 		distribution := autocodesign.DistributionType(strings.TrimSpace(parts[0]))
-		templateName := strings.TrimSpace(parts[1])
+		if len(parts) == 1 {
+			continue
+		}
 
+		templateName := strings.TrimSpace(parts[1])
 		if templateName == "" {
 			continue
 		}
 
-		distributionToTemplate[distribution] = tempalteName
+		distributionToTemplate[distribution] = templateName
 	}
 
 	return distributionToTemplate, nil
