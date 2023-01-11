@@ -58,6 +58,10 @@ func main() {
 	if err := parser.Parse(&cfg); err != nil {
 		failf("Config: %s", err)
 	}
+	profileTempalates, err := parseTemplateName(cfg.ProfileTemplateName)
+	if err != nil {
+		failf("Config: %s", err)
+	}
 	stepconf.Print(cfg)
 
 	logger := log.NewLogger()
@@ -183,6 +187,7 @@ func main() {
 		BitriseTestDevices:      testDevices,
 		MinProfileValidityDays:  cfg.MinProfileDaysValid,
 		VerboseLog:              cfg.VerboseLog,
+		ProfileTemplateName:     profileTempalates,
 	})
 	if err != nil {
 		failf(fmt.Sprintf("Automatic code signing failed: %s", err))
