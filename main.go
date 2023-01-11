@@ -58,12 +58,11 @@ func main() {
 	if err := parser.Parse(&cfg); err != nil {
 		failf("Config: %s", err)
 	}
-	stepconf.Print(cfg)
-
 	profileTempalates, err := parseTemplateName(cfg.ProfileTemplateName)
 	if err != nil {
 		failf("Config: %s", err)
 	}
+	stepconf.Print(cfg)
 
 	logger := log.NewLogger()
 	logger.EnableDebugLog(cfg.VerboseLog)
