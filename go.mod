@@ -8,7 +8,7 @@ require (
 	github.com/bitrise-io/go-utils v1.0.2
 	github.com/bitrise-io/go-utils/v2 v2.0.0-alpha.11
 	github.com/bitrise-io/go-xcode v1.0.9
-	github.com/bitrise-io/go-xcode/v2 v2.0.0-alpha.20
+	github.com/bitrise-io/go-xcode/v2 v2.0.0-alpha.25
 	github.com/golang-jwt/jwt/v4 v4.4.2 // indirect
 	github.com/hashicorp/go-version v1.6.0 // indirect
 	github.com/stretchr/testify v1.8.0 // indirect
