@@ -54,27 +54,6 @@ workflows:
   # - https://github.com/bitrise-steplib/bitrise-step-manage-ios-code-signing/pull/79
   # - https://github.com/bitrise-io/go-xcode/pull/125
   test_appclip:
-    before_run:
-    - _expose_xcode_version
-    steps:
-    - script:
-        inputs:
-        - content: |-
-            #!/bin/env bash
-            set -e
-            if [[ ${XCODE_MAJOR_VERSION} -lt 13 ]]; then
-              echo "This test case requires Xcode >= 13, skipping..."
-              exit 0
-            fi
-            envman add --key XCODE_MAJOR_VERSION_AT_LEAST_13 --value "true"
-    - bitrise-run:
-        run_if: |-
-          {{ enveq "XCODE_MAJOR_VERSION_AT_LEAST_13" "true" }}
-        inputs:
-        - workflow_id: utility_test_appclip
-        - bitrise_config_path: ./e2e/bitrise.yml
-
-  utility_test_appclip:
     envs:
     - TEST_APP_URL: https://github.com/bitrise-io/Fruta.git
     - TEST_APP_BRANCH: master
@@ -94,27 +73,6 @@ workflows:
     - _check_xcode_archive
 
   test_xcode13_uitest_signing:
-    before_run:
-    - _expose_xcode_version
-    steps:
-    - script:
-        inputs:
-        - content: |-
-            #!/bin/env bash
-            set -e
-            if [[ ${XCODE_MAJOR_VERSION} -lt 11 ]]; then
-              echo "This test case requires Xcode >= 11, skipping..."
-              exit 0
-            fi
-            envman add --key XCODE_MAJOR_VERSION_AT_LEAST_11 --value "true"
-    - bitrise-run:
-        run_if: |-
-          {{ enveq "XCODE_MAJOR_VERSION_AT_LEAST_11" "true" }}
-        inputs:
-        - workflow_id: utility_test_xcode13_uitest_signing
-        - bitrise_config_path: ./e2e/bitrise.yml
-
-  utility_test_xcode13_uitest_signing:
     envs:
     - TEST_APP_URL: https://github.com/bitrise-io/sample-xcode-13-empty.git
     - TEST_APP_BRANCH: main
@@ -135,27 +93,6 @@ workflows:
     - _check_xcode_build_for_test
 
   test_uitest_signing:
-    before_run:
-    - _expose_xcode_version
-    steps:
-    - script:
-        inputs:
-        - content: |-
-            #!/bin/env bash
-            set -e
-            if [[ ${XCODE_MAJOR_VERSION} -lt 11 ]]; then
-              echo "This test case requires Xcode >= 11, skipping..."
-              exit 0
-            fi
-            envman add --key XCODE_MAJOR_VERSION_AT_LEAST_11 --value "true"
-    - bitrise-run:
-        run_if: |-
-          {{ enveq "XCODE_MAJOR_VERSION_AT_LEAST_11" "true" }}
-        inputs:
-        - workflow_id: utility_test_uitest_signing
-        - bitrise_config_path: ./e2e/bitrise.yml
-
-  utility_test_uitest_signing:
     envs:
     - TEST_APP_URL: https://github.com/bitrise-io/sample-apps-fastlane-test.git
     - TEST_APP_BRANCH: master
@@ -216,15 +153,6 @@ workflows:
     - _check_xcode_archive
 
   test_tvos:
-    steps:
-    - bitrise-run:
-        run_if: |-
-          {{ getenv "BITRISEIO_STACK_ID" | eq "osx-xcode-12.5.x" }}
-        inputs:
-        - workflow_id: utility_test_tvos
-        - bitrise_config_path: ./e2e/bitrise.yml
-
-  utility_test_tvos:
     envs:
     - TEST_APP_URL: https://github.com/bitrise-io/sample-apps-tvos-swift.git
     - TEST_APP_BRANCH: master
@@ -245,15 +173,6 @@ workflows:
     - _check_xcode_archive
 
   test_tvos_development:
-    steps:
-    - bitrise-run:
-        run_if: |-
-          {{ getenv "BITRISEIO_STACK_ID" | eq "osx-xcode-12.5.x" }}
-        inputs:
-        - workflow_id: utility_test_tvos_development
-        - bitrise_config_path: ./e2e/bitrise.yml
-
-  utility_test_tvos_development:
     envs:
     - TEST_APP_URL: https://github.com/bitrise-io/sample-apps-tvos-swift.git
     - TEST_APP_BRANCH: master
@@ -274,15 +193,6 @@ workflows:
     - _check_xcode_archive
 
   test_new_certificates:
-    steps:
-    - bitrise-run:
-        run_if: |-
-          {{ enveq "BITRISEIO_STACK_ID" "osx-xcode-12.5.x" }}
-        inputs:
-        - workflow_id: utility_test_new_certificates
-        - bitrise_config_path: ./e2e/bitrise.yml
-
-  utility_test_new_certificates:
     title: Test new Apple Development and Distribution certificates
     description: |-
       This workflow requires Xcode 11 stack or above to run.
