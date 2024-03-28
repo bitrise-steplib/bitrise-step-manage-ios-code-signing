@@ -16,6 +16,45 @@ app:
   - BITFALL_APPSTORECONNECT_API_KEY_ISSUER_ID: $BITFALL_APPSTORECONNECT_API_KEY_ISSUER_ID
 
 workflows:
+  test_tvos:
+    envs:
+    - TEST_APP_URL: https://github.com/bitrise-io/Bitrise-tvOS-Sample.git
+    - TEST_APP_BRANCH: main
+    - BITRISE_PROJECT_PATH: Bitrise-tvOS-Sample.xcodeproj
+    - BITRISE_SCHEME: Bitrise-tvOS-Sample
+    - BITRISE_CONFIGURATION:
+    - SIGN_UITEST_TARGET: "no"
+    - REGISTER_TEST_DEVICES: "yes"
+    - INSTALL_PODS: "false"
+    - DISTRIBUTION_TYPE: app-store
+    - CONNECTION: api-key
+    after_run:
+    - _run
+    - _check_outputs
+    - _check_xcode_archive
+    - _run_with_apple_id
+    - _check_outputs
+    - _check_xcode_archive
+
+  test_tvos_development:
+    envs:
+    - TEST_APP_URL: https://github.com/bitrise-io/Bitrise-tvOS-Sample.git
+    - TEST_APP_BRANCH: main
+    - BITRISE_PROJECT_PATH: Bitrise-tvOS-Sample.xcodeproj
+    - BITRISE_SCHEME: Bitrise-tvOS-Sample
+    - BITRISE_CONFIGURATION:
+    - SIGN_UITEST_TARGET: "no"
+    - REGISTER_TEST_DEVICES: "yes"
+    - INSTALL_PODS: "false"
+    - DISTRIBUTION_TYPE: development
+    - CONNECTION: api-key
+    after_run:
+    - _run
+    - _check_outputs
+    - _check_xcode_archive
+    - _run_with_apple_id
+    - _check_outputs
+    - _check_xcode_archive
   test_api_key_override:
     envs:
     - TEST_APP_URL: https://github.com/bitrise-samples/sample-apps-ios-simple-objc.git
