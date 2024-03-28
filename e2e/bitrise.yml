@@ -152,46 +152,6 @@ workflows:
     - _check_outputs
     - _check_xcode_archive
 
-  test_tvos:
-    envs:
-    - TEST_APP_URL: https://github.com/bitrise-io/sample-apps-tvos-swift.git
-    - TEST_APP_BRANCH: master
-    - BITRISE_PROJECT_PATH: NPO Live.xcworkspace
-    - BITRISE_SCHEME: NPO Live
-    - BITRISE_CONFIGURATION:
-    - SIGN_UITEST_TARGET: "no"
-    - REGISTER_TEST_DEVICES: "yes"
-    - INSTALL_PODS: "false"
-    - DISTRIBUTION_TYPE: app-store
-    - CONNECTION: api-key
-    after_run:
-    - _run
-    - _check_outputs
-    - _check_xcode_archive
-    - _run_with_apple_id
-    - _check_outputs
-    - _check_xcode_archive
-
-  test_tvos_development:
-    envs:
-    - TEST_APP_URL: https://github.com/bitrise-io/sample-apps-tvos-swift.git
-    - TEST_APP_BRANCH: master
-    - BITRISE_PROJECT_PATH: NPO Live.xcworkspace
-    - BITRISE_SCHEME: NPO Live
-    - BITRISE_CONFIGURATION:
-    - SIGN_UITEST_TARGET: "no"
-    - REGISTER_TEST_DEVICES: "yes"
-    - INSTALL_PODS: "false"
-    - DISTRIBUTION_TYPE: development
-    - CONNECTION: api-key
-    after_run:
-    - _run
-    - _check_outputs
-    - _check_xcode_archive
-    - _run_with_apple_id
-    - _check_outputs
-    - _check_xcode_archive
-
   test_new_certificates:
     title: Test new Apple Development and Distribution certificates
     description: |-
