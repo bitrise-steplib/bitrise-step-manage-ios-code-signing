@@ -32,7 +32,6 @@ workflows:
     - _run
     - _check_outputs
     - _check_xcode_archive
-    - _run_with_apple_id
     - _check_outputs
     - _check_xcode_archive
 
@@ -52,9 +51,9 @@ workflows:
     - _run
     - _check_outputs
     - _check_xcode_archive
-    - _run_with_apple_id
     - _check_outputs
     - _check_xcode_archive
+
   test_api_key_override:
     envs:
     - TEST_APP_URL: https://github.com/bitrise-samples/sample-apps-ios-simple-objc.git
@@ -107,7 +106,6 @@ workflows:
     - _run
     - _check_outputs
     - _check_xcode_archive
-    - _run_with_apple_id
     - _check_outputs
     - _check_xcode_archive
 
@@ -127,7 +125,6 @@ workflows:
     - _run
     - _check_outputs
     - _check_xcode_build_for_test
-    - _run_with_apple_id
     - _check_outputs
     - _check_xcode_build_for_test
 
@@ -147,7 +144,6 @@ workflows:
     - _run
     - _check_outputs
     - _check_xcode_build_for_test
-    - _run_with_apple_id
     - _check_outputs
     - _check_xcode_build_for_test
 
@@ -187,7 +183,6 @@ workflows:
     - _run
     - _check_outputs
     - _check_xcode_archive
-    - _run_with_apple_id
     - _check_outputs
     - _check_xcode_archive
 
@@ -210,7 +205,6 @@ workflows:
     - _run
     - _check_outputs
     - _check_xcode_archive
-    - _run_with_apple_id
     - _check_outputs
     - _check_xcode_archive
 
