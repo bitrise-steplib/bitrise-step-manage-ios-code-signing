@@ -155,6 +155,10 @@ func main() {
 		failf(err.Error())
 	}
 
+	if err := devPortalClient.Login(); err != nil {
+		failf(err.Error())
+	}
+
 	fmt.Println()
 	logger.TDebugf("Downloading certificates")
 	certs, err := downloadCertificates(certDownloader, logger)
