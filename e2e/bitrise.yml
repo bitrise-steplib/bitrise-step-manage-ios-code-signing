@@ -293,12 +293,12 @@ workflows:
   _run_with_apple_id:
     description: Running Apple ID tests on a single stack to avoid 503 Service Temporarily Unavailable issue.
     steps:
-      - bitrise-run:
-          run_if: |-
-            {{ or (enveq "IS_LATEST_STACK_XCODE" "true") (not .IsCI) }}
-          inputs:
-            - workflow_id: utility_run_with_apple_id
-            - bitrise_config_path: ./e2e/bitrise.yml
+    - bitrise-run:
+        run_if: |-
+          {{ or (enveq "IS_LATEST_STACK_XCODE" "true") (not .IsCI) }}
+        inputs:
+        - workflow_id: utility_run_with_apple_id
+        - bitrise_config_path: ./e2e/bitrise.yml
 
   _check_outputs:
     steps:
