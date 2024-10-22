@@ -150,6 +150,8 @@ func main() {
 	assetWriter := codesignasset.NewWriter(*keychain)
 	localCodesignAssetManager := localcodesignasset.NewManager(localcodesignasset.NewProvisioningProfileProvider(), localcodesignasset.NewProvisioningProfileConverter())
 
+	fmt.Printf("TTT | Details: team: %s, sesh: %s", cfg.TeamID, appleAuthCredentials.AppleID.Session)
+
 	devPortalClient, err := devPortalClientFactory.Create(appleAuthCredentials, cfg.TeamID)
 	if err != nil {
 		failf(err.Error())
