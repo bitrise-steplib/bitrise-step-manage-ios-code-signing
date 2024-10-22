@@ -150,8 +150,20 @@ func main() {
 	assetWriter := codesignasset.NewWriter(*keychain)
 	localCodesignAssetManager := localcodesignasset.NewManager(localcodesignasset.NewProvisioningProfileProvider(), localcodesignasset.NewProvisioningProfileConverter())
 
+	if appleAuthCredentials.AppleID != nil {
+		fmt.Printf("TTT | apple id details: team: %s, sesh: %s\n", cfg.TeamID, appleAuthCredentials.AppleID.Session)
+	} else if appleAuthCredentials.APIKey != nil {
+		fmt.Println("TTT | apple key")
+	} else {
+		fmt.Println("TTT | unexpected")
+	}
+
 	devPortalClient, err := devPortalClientFactory.Create(appleAuthCredentials, cfg.TeamID)
 	if err != nil {
+		failf(err.Error())
+	}
+
+	if err := devPortalClient.Login(); err != nil {
 		failf(err.Error())
 	}
 
