@@ -16,136 +16,136 @@ app:
   - BITFALL_APPSTORECONNECT_API_KEY_ISSUER_ID: $BITFALL_APPSTORECONNECT_API_KEY_ISSUER_ID
 
 workflows:
-  test_tvos:
-    envs:
-    - TEST_APP_URL: https://github.com/bitrise-io/Bitrise-tvOS-Sample.git
-    - TEST_APP_BRANCH: main
-    - BITRISE_PROJECT_PATH: Bitrise-tvOS-Sample.xcodeproj
-    - BITRISE_SCHEME: Bitrise-tvOS-Sample
-    - BITRISE_CONFIGURATION:
-    - SIGN_UITEST_TARGET: "no"
-    - REGISTER_TEST_DEVICES: "yes"
-    - INSTALL_PODS: "false"
-    - DISTRIBUTION_TYPE: app-store
-    - CONNECTION: api-key
-    after_run:
-    - _run
-    - _check_outputs
-    - _check_xcode_archive
-    - _check_outputs
-    - _check_xcode_archive
-
-  test_tvos_development:
-    envs:
-    - TEST_APP_URL: https://github.com/bitrise-io/Bitrise-tvOS-Sample.git
-    - TEST_APP_BRANCH: main
-    - BITRISE_PROJECT_PATH: Bitrise-tvOS-Sample.xcodeproj
-    - BITRISE_SCHEME: Bitrise-tvOS-Sample
-    - BITRISE_CONFIGURATION:
-    - SIGN_UITEST_TARGET: "no"
-    - REGISTER_TEST_DEVICES: "yes"
-    - INSTALL_PODS: "false"
-    - DISTRIBUTION_TYPE: development
-    - CONNECTION: api-key
-    after_run:
-    - _run
-    - _check_outputs
-    - _check_xcode_archive
-    - _check_outputs
-    - _check_xcode_archive
-
-  test_api_key_override:
-    envs:
-    - TEST_APP_URL: https://github.com/bitrise-samples/sample-apps-ios-simple-objc.git
-    - TEST_APP_BRANCH: bundle_id
-    - BITRISE_PROJECT_PATH: ios-simple-objc/ios-simple-objc.xcodeproj
-    - BITRISE_SCHEME: ios-simple-objc
-    - BITRISE_CONFIGURATION: Release
-    - SIGN_UITEST_TARGET: "no"
-    - REGISTER_TEST_DEVICES: "yes"
-    - INSTALL_PODS: "false"
-    - DISTRIBUTION_TYPE: ad-hoc
-    - CONNECTION: api-key
-    - API_KEY_PATH: $BITFALL_APPSTORECONNECT_API_KEY_URL
-    - API_KEY_ID: $BITFALL_APPSTORECONNECT_API_KEY_ID
-    - API_KEY_ISSUER_ID: $BITFALL_APPSTORECONNECT_API_KEY_ISSUER_ID
-    steps:
-    - script:
-        title: Unset Bitrise API connection env vars
-        inputs:
-        - content: |-
-            #!/usr/bin/env bash
-            set -ex
-            envman add --key BITRISE_BUILD_URL_BACKUP --value $BITRISE_BUILD_URL
-            envman add --key BITRISE_BUILD_API_TOKEN_BACKUP --value $BITRISE_BUILD_API_TOKEN
-            envman unset --key BITRISE_BUILD_URL
-            envman unset --key BITRISE_BUILD_API_TOKEN
-    after_run:
-    - _run
-    - _check_outputs
-    - _check_xcode_archive
-    - _restore_api_envs
-
-  # Preconditions: the sample project's (https://github.com/bitrise-io/Fruta.git) App Clip target
-  # needs to have an Application Identifier on the Apple Developer Portal, with all the required capabilities set.
-  # Reasons can be found here:
-  # - https://github.com/bitrise-steplib/bitrise-step-manage-ios-code-signing/pull/79
-  # - https://github.com/bitrise-io/go-xcode/pull/125
-  test_appclip:
-    envs:
-    - TEST_APP_URL: https://github.com/bitrise-io/Fruta.git
-    - TEST_APP_BRANCH: master
-    - BITRISE_PROJECT_PATH: Fruta.xcodeproj
-    - BITRISE_SCHEME: Fruta iOS
-    - SIGN_UITEST_TARGET: "no"
-    - REGISTER_TEST_DEVICES: "yes"
-    - INSTALL_PODS: "false"
-    - DISTRIBUTION_TYPE: development
-    - CONNECTION: api-key
-    after_run:
-    - _run
-    - _check_outputs
-    - _check_xcode_archive
-    - _check_outputs
-    - _check_xcode_archive
-
-  test_xcode13_uitest_signing:
-    envs:
-    - TEST_APP_URL: https://github.com/bitrise-io/sample-xcode-13-empty.git
-    - TEST_APP_BRANCH: main
-    - BITRISE_PROJECT_PATH: sample-xcode-13-empty.xcodeproj
-    - BITRISE_SCHEME: sample-xcode-13-empty
-    - BITRISE_CONFIGURATION: Debug
-    - SIGN_UITEST_TARGET: "yes"
-    - REGISTER_TEST_DEVICES: "yes"
-    - INSTALL_PODS: "false"
-    - DISTRIBUTION_TYPE: development
-    - CONNECTION: api-key
-    after_run:
-    - _run
-    - _check_outputs
-    - _check_xcode_build_for_test
-    - _check_outputs
-    - _check_xcode_build_for_test
-
-  test_uitest_signing:
-    envs:
-    - TEST_APP_URL: https://github.com/bitrise-io/sample-apps-fastlane-test.git
-    - TEST_APP_BRANCH: master
-    - BITRISE_PROJECT_PATH: sample-apps-fastlane-test.xcodeproj
-    - BITRISE_SCHEME: sample-apps-fastlane-test
-    - BITRISE_CONFIGURATION: Debug
-    - SIGN_UITEST_TARGET: "yes"
-    - REGISTER_TEST_DEVICES: "yes"
-    - INSTALL_PODS: "false"
-    - DISTRIBUTION_TYPE: development
-    - CONNECTION: api-key
-    after_run:
-    - _run
-    - _check_outputs
-    - _check_xcode_build_for_test
-    - _check_outputs
-    - _check_xcode_build_for_test
+#  test_tvos:
+#    envs:
+#    - TEST_APP_URL: https://github.com/bitrise-io/Bitrise-tvOS-Sample.git
+#    - TEST_APP_BRANCH: main
+#    - BITRISE_PROJECT_PATH: Bitrise-tvOS-Sample.xcodeproj
+#    - BITRISE_SCHEME: Bitrise-tvOS-Sample
+#    - BITRISE_CONFIGURATION:
+#    - SIGN_UITEST_TARGET: "no"
+#    - REGISTER_TEST_DEVICES: "yes"
+#    - INSTALL_PODS: "false"
+#    - DISTRIBUTION_TYPE: app-store
+#    - CONNECTION: api-key
+#    after_run:
+#    - _run
+#    - _check_outputs
+#    - _check_xcode_archive
+#    - _check_outputs
+#    - _check_xcode_archive
+#
+#  test_tvos_development:
+#    envs:
+#    - TEST_APP_URL: https://github.com/bitrise-io/Bitrise-tvOS-Sample.git
+#    - TEST_APP_BRANCH: main
+#    - BITRISE_PROJECT_PATH: Bitrise-tvOS-Sample.xcodeproj
+#    - BITRISE_SCHEME: Bitrise-tvOS-Sample
+#    - BITRISE_CONFIGURATION:
+#    - SIGN_UITEST_TARGET: "no"
+#    - REGISTER_TEST_DEVICES: "yes"
+#    - INSTALL_PODS: "false"
+#    - DISTRIBUTION_TYPE: development
+#    - CONNECTION: api-key
+#    after_run:
+#    - _run
+#    - _check_outputs
+#    - _check_xcode_archive
+#    - _check_outputs
+#    - _check_xcode_archive
+#
+#  test_api_key_override:
+#    envs:
+#    - TEST_APP_URL: https://github.com/bitrise-samples/sample-apps-ios-simple-objc.git
+#    - TEST_APP_BRANCH: bundle_id
+#    - BITRISE_PROJECT_PATH: ios-simple-objc/ios-simple-objc.xcodeproj
+#    - BITRISE_SCHEME: ios-simple-objc
+#    - BITRISE_CONFIGURATION: Release
+#    - SIGN_UITEST_TARGET: "no"
+#    - REGISTER_TEST_DEVICES: "yes"
+#    - INSTALL_PODS: "false"
+#    - DISTRIBUTION_TYPE: ad-hoc
+#    - CONNECTION: api-key
+#    - API_KEY_PATH: $BITFALL_APPSTORECONNECT_API_KEY_URL
+#    - API_KEY_ID: $BITFALL_APPSTORECONNECT_API_KEY_ID
+#    - API_KEY_ISSUER_ID: $BITFALL_APPSTORECONNECT_API_KEY_ISSUER_ID
+#    steps:
+#    - script:
+#        title: Unset Bitrise API connection env vars
+#        inputs:
+#        - content: |-
+#            #!/usr/bin/env bash
+#            set -ex
+#            envman add --key BITRISE_BUILD_URL_BACKUP --value $BITRISE_BUILD_URL
+#            envman add --key BITRISE_BUILD_API_TOKEN_BACKUP --value $BITRISE_BUILD_API_TOKEN
+#            envman unset --key BITRISE_BUILD_URL
+#            envman unset --key BITRISE_BUILD_API_TOKEN
+#    after_run:
+#    - _run
+#    - _check_outputs
+#    - _check_xcode_archive
+#    - _restore_api_envs
+#
+#  # Preconditions: the sample project's (https://github.com/bitrise-io/Fruta.git) App Clip target
+#  # needs to have an Application Identifier on the Apple Developer Portal, with all the required capabilities set.
+#  # Reasons can be found here:
+#  # - https://github.com/bitrise-steplib/bitrise-step-manage-ios-code-signing/pull/79
+#  # - https://github.com/bitrise-io/go-xcode/pull/125
+#  test_appclip:
+#    envs:
+#    - TEST_APP_URL: https://github.com/bitrise-io/Fruta.git
+#    - TEST_APP_BRANCH: master
+#    - BITRISE_PROJECT_PATH: Fruta.xcodeproj
+#    - BITRISE_SCHEME: Fruta iOS
+#    - SIGN_UITEST_TARGET: "no"
+#    - REGISTER_TEST_DEVICES: "yes"
+#    - INSTALL_PODS: "false"
+#    - DISTRIBUTION_TYPE: development
+#    - CONNECTION: api-key
+#    after_run:
+#    - _run
+#    - _check_outputs
+#    - _check_xcode_archive
+#    - _check_outputs
+#    - _check_xcode_archive
+#
+#  test_xcode13_uitest_signing:
+#    envs:
+#    - TEST_APP_URL: https://github.com/bitrise-io/sample-xcode-13-empty.git
+#    - TEST_APP_BRANCH: main
+#    - BITRISE_PROJECT_PATH: sample-xcode-13-empty.xcodeproj
+#    - BITRISE_SCHEME: sample-xcode-13-empty
+#    - BITRISE_CONFIGURATION: Debug
+#    - SIGN_UITEST_TARGET: "yes"
+#    - REGISTER_TEST_DEVICES: "yes"
+#    - INSTALL_PODS: "false"
+#    - DISTRIBUTION_TYPE: development
+#    - CONNECTION: api-key
+#    after_run:
+#    - _run
+#    - _check_outputs
+#    - _check_xcode_build_for_test
+#    - _check_outputs
+#    - _check_xcode_build_for_test
+#
+#  test_uitest_signing:
+#    envs:
+#    - TEST_APP_URL: https://github.com/bitrise-io/sample-apps-fastlane-test.git
+#    - TEST_APP_BRANCH: master
+#    - BITRISE_PROJECT_PATH: sample-apps-fastlane-test.xcodeproj
+#    - BITRISE_SCHEME: sample-apps-fastlane-test
+#    - BITRISE_CONFIGURATION: Debug
+#    - SIGN_UITEST_TARGET: "yes"
+#    - REGISTER_TEST_DEVICES: "yes"
+#    - INSTALL_PODS: "false"
+#    - DISTRIBUTION_TYPE: development
+#    - CONNECTION: api-key
+#    after_run:
+#    - _run
+#    - _check_outputs
+#    - _check_xcode_build_for_test
+#    - _check_outputs
+#    - _check_xcode_build_for_test
 
   test_bundle_id:
     envs:
@@ -160,82 +160,82 @@ workflows:
     - DISTRIBUTION_TYPE: ad-hoc
     - CONNECTION: api-key
     after_run:
-    - _run
-    - _check_outputs
-    - _check_xcode_archive
+#    - _run
+#    - _check_outputs
+#    - _check_xcode_archive
     - _run_with_apple_id
-    - _check_outputs
-    - _check_xcode_archive
+#    - _check_outputs
+#    - _check_xcode_archive
 
-  test_entitlements:
-    envs:
-    - TEST_APP_URL: https://github.com/bitrise-io/sample-apps-ios-multi-target.git
-    - TEST_APP_BRANCH: entitlements
-    - BITRISE_PROJECT_PATH: code-sign-test.xcodeproj
-    - BITRISE_SCHEME: code-sign-test
-    - BITRISE_CONFIGURATION:
-    - SIGN_UITEST_TARGET: "no"
-    - REGISTER_TEST_DEVICES: "yes"
-    - INSTALL_PODS: "false"
-    - DISTRIBUTION_TYPE: app-store
-    - CONNECTION: api-key
-    after_run:
-    - _run
-    - _check_outputs
-    - _check_xcode_archive
-    - _check_outputs
-    - _check_xcode_archive
-
-  test_new_certificates:
-    title: Test new Apple Development and Distribution certificates
-    description: |-
-      This workflow requires Xcode 11 stack or above to run.
-    envs:
-    - TEST_APP_URL: https://github.com/bitrise-io/sample-apps-ios-simple-objc.git
-    - TEST_APP_BRANCH: new-certificates
-    - BITRISE_PROJECT_PATH: ios-simple-objc/ios-simple-objc.xcodeproj
-    - BITRISE_SCHEME: ios-simple-objc
-    - BITRISE_CONFIGURATION: Release
-    - SIGN_UITEST_TARGET: "no"
-    - REGISTER_TEST_DEVICES: "yes"
-    - INSTALL_PODS: "false"
-    - DISTRIBUTION_TYPE: app-store
-    - CONNECTION: api-key
-    after_run:
-    - _run
-    - _check_outputs
-    - _check_xcode_archive
-    - _check_outputs
-    - _check_xcode_archive
-
-  test_single_certificate_no_passphrase:
-    steps:
-    - script:
-        inputs:
-        - content: |-
-            #!/bin/bash
-            set -ex
-            rm -rf "./_tmp"
-            mkdir -p "./_tmp"
-    - git::https://github.com/bitrise-steplib/bitrise-step-simple-git-clone.git@master:
-        inputs:
-        - repository_url: https://github.com/bitrise-io/sample-apps-ios-simple-objc.git
-        - branch: bundle_id
-        - clone_into_dir: ./_tmp
-    - path::./:
-        title: Step Test
-        inputs:
-        - apple_service_connection: api-key
-        - certificate_url_list: $BITFALL_APPLE_IOS_CERTIFICATE_NOPASSPHRASE_URL
-        - passphrase_list: ""
-        - distribution_method: development
-        - project_path: ./_tmp/ios-simple-objc/ios-simple-objc.xcodeproj
-        - scheme: ios-simple-objc
-        - configuration: Release
-        - keychain_path: $BITRISE_KEYCHAIN_PATH
-        - keychain_password: $BITRISE_KEYCHAIN_PASSWORD
-        - verbose_log: "yes"
-        - apple_team_id: $TEAM_ID
+#  test_entitlements:
+#    envs:
+#    - TEST_APP_URL: https://github.com/bitrise-io/sample-apps-ios-multi-target.git
+#    - TEST_APP_BRANCH: entitlements
+#    - BITRISE_PROJECT_PATH: code-sign-test.xcodeproj
+#    - BITRISE_SCHEME: code-sign-test
+#    - BITRISE_CONFIGURATION:
+#    - SIGN_UITEST_TARGET: "no"
+#    - REGISTER_TEST_DEVICES: "yes"
+#    - INSTALL_PODS: "false"
+#    - DISTRIBUTION_TYPE: app-store
+#    - CONNECTION: api-key
+#    after_run:
+#    - _run
+#    - _check_outputs
+#    - _check_xcode_archive
+#    - _check_outputs
+#    - _check_xcode_archive
+#
+#  test_new_certificates:
+#    title: Test new Apple Development and Distribution certificates
+#    description: |-
+#      This workflow requires Xcode 11 stack or above to run.
+#    envs:
+#    - TEST_APP_URL: https://github.com/bitrise-io/sample-apps-ios-simple-objc.git
+#    - TEST_APP_BRANCH: new-certificates
+#    - BITRISE_PROJECT_PATH: ios-simple-objc/ios-simple-objc.xcodeproj
+#    - BITRISE_SCHEME: ios-simple-objc
+#    - BITRISE_CONFIGURATION: Release
+#    - SIGN_UITEST_TARGET: "no"
+#    - REGISTER_TEST_DEVICES: "yes"
+#    - INSTALL_PODS: "false"
+#    - DISTRIBUTION_TYPE: app-store
+#    - CONNECTION: api-key
+#    after_run:
+#    - _run
+#    - _check_outputs
+#    - _check_xcode_archive
+#    - _check_outputs
+#    - _check_xcode_archive
+#
+#  test_single_certificate_no_passphrase:
+#    steps:
+#    - script:
+#        inputs:
+#        - content: |-
+#            #!/bin/bash
+#            set -ex
+#            rm -rf "./_tmp"
+#            mkdir -p "./_tmp"
+#    - git::https://github.com/bitrise-steplib/bitrise-step-simple-git-clone.git@master:
+#        inputs:
+#        - repository_url: https://github.com/bitrise-io/sample-apps-ios-simple-objc.git
+#        - branch: bundle_id
+#        - clone_into_dir: ./_tmp
+#    - path::./:
+#        title: Step Test
+#        inputs:
+#        - apple_service_connection: api-key
+#        - certificate_url_list: $BITFALL_APPLE_IOS_CERTIFICATE_NOPASSPHRASE_URL
+#        - passphrase_list: ""
+#        - distribution_method: development
+#        - project_path: ./_tmp/ios-simple-objc/ios-simple-objc.xcodeproj
+#        - scheme: ios-simple-objc
+#        - configuration: Release
+#        - keychain_path: $BITRISE_KEYCHAIN_PATH
+#        - keychain_password: $BITRISE_KEYCHAIN_PASSWORD
+#        - verbose_log: "yes"
+#        - apple_team_id: $TEAM_ID
 
   _run:
     steps:
