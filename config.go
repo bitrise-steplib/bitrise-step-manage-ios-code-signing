@@ -31,6 +31,7 @@ type Config struct {
 	APIKeyPath                stepconf.Secret `env:"api_key_path"`
 	APIKeyID                  string          `env:"api_key_id"`
 	APIKeyIssuerID            string          `env:"api_key_issuer_id"`
+	APIKeyEnterpriseAccount   bool            `env:"api_key_enterprise_account,opt[yes,no]"`
 
 	VerboseLog bool `env:"verbose_log,opt[no,yes]"`
 }

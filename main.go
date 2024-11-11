@@ -133,9 +133,10 @@ func main() {
 	}
 
 	connectionInputs := codesign.ConnectionOverrideInputs{
-		APIKeyPath:     cfg.APIKeyPath,
-		APIKeyID:       cfg.APIKeyID,
-		APIKeyIssuerID: cfg.APIKeyIssuerID,
+		APIKeyPath:              cfg.APIKeyPath,
+		APIKeyID:                cfg.APIKeyID,
+		APIKeyIssuerID:          cfg.APIKeyIssuerID,
+		APIKeyEnterpriseAccount: cfg.APIKeyEnterpriseAccount,
 	}
 	appleAuthCredentials, err := codesign.SelectConnectionCredentials(authType, connection, connectionInputs, logger)
 	if err != nil {
