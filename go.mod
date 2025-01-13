@@ -1,6 +1,8 @@
 module github.com/bitrise-steplib/bitrise-step-manage-ios-code-signing
 
-go 1.20
+go 1.21
+
+toolchain go1.23.2
 
 require (
 	github.com/bitrise-io/go-steputils v1.0.5
@@ -8,7 +10,7 @@ require (
 	github.com/bitrise-io/go-utils v1.0.12
 	github.com/bitrise-io/go-utils/v2 v2.0.0-alpha.23
 	github.com/bitrise-io/go-xcode v1.1.1
-	github.com/bitrise-io/go-xcode/v2 v2.0.0-alpha.50
+	github.com/bitrise-io/go-xcode/v2 v2.0.0-alpha.51
 )
 
 require (
@@ -25,8 +27,8 @@ require (
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/stretchr/objx v0.5.2 // indirect
 	github.com/stretchr/testify v1.9.0 // indirect
-	golang.org/x/crypto v0.12.0 // indirect
-	golang.org/x/text v0.12.0 // indirect
+	golang.org/x/crypto v0.29.0 // indirect
+	golang.org/x/text v0.20.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	howett.net/plist v1.0.0 // indirect
 )
