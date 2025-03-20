@@ -10,7 +10,7 @@ require (
 	github.com/bitrise-io/go-utils v1.0.12
 	github.com/bitrise-io/go-utils/v2 v2.0.0-alpha.23
 	github.com/bitrise-io/go-xcode v1.1.2
-	github.com/bitrise-io/go-xcode/v2 v2.0.0-alpha.53.0.20250320132400-71a307d96a2c
+	github.com/bitrise-io/go-xcode/v2 v2.0.0-alpha.53.0.20250320134433-66f60db9f41b
 )
 
 require (
