@@ -7,12 +7,30 @@ import (
 // DevicesEndpoint ...
 const DevicesEndpoint = "devices"
 
+// ListDevicesSortOption ...
+type ListDevicesSortOption string
+
+// ListDevicesSortOptions ...
+const (
+	ListDevicesSortOptionName         ListDevicesSortOption = "name"
+	ListDevicesSortOptionNameDesc     ListDevicesSortOption = "-name"
+	ListDevicesSortOptionPlatform     ListDevicesSortOption = "platform"
+	ListDevicesSortOptionPlatformDesc ListDevicesSortOption = "-platform"
+	ListDevicesSortOptionUDID         ListDevicesSortOption = "udid"
+	ListDevicesSortOptionUDIDDesc     ListDevicesSortOption = "-udid"
+	ListDevicesSortOptionStatus       ListDevicesSortOption = "status"
+	ListDevicesSortOptionStatusDesc   ListDevicesSortOption = "-status"
+	ListDevicesSortOptionID           ListDevicesSortOption = "id"
+	ListDevicesSortOptionIDDesc       ListDevicesSortOption = "-id"
+)
+
 // ListDevicesOptions ...
 type ListDevicesOptions struct {
 	PagingOptions
-	FilterUDID     string         `url:"filter[udid],omitempty"`
-	FilterPlatform DevicePlatform `url:"filter[platform],omitempty"`
-	FilterStatus   Status         `url:"filter[status],omitempty"`
+	FilterUDID     string                `url:"filter[udid],omitempty"`
+	FilterPlatform DevicePlatform        `url:"filter[platform],omitempty"`
+	FilterStatus   Status                `url:"filter[status],omitempty"`
+	Sort           ListDevicesSortOption `url:"sort,omitempty"`
 }
 
 // DeviceClass ...
@@ -68,6 +86,7 @@ type Device struct {
 type DevicesResponse struct {
 	Data  []Device           `json:"data"`
 	Links PagedDocumentLinks `json:"links,omitempty"`
+	Meta  PagingInformation  `json:"meta,omitempty"`
 }
 
 // DeviceResponse ...
@@ -78,18 +97,8 @@ type DeviceResponse struct {
 
 // ListDevices ...
 func (s ProvisioningService) ListDevices(opt *ListDevicesOptions) (*DevicesResponse, error) {
-	if opt.Next != "" {
-		req, err := s.client.NewRequestWithRelationshipURL(http.MethodGet, opt.Next, nil)
-		if err != nil {
-			return nil, err
-		}
-
-		r := &DevicesResponse{}
-		if _, err := s.client.Do(req, r); err != nil {
-			return nil, err
-		}
-
-		return r, nil
+	if err := opt.UpdateCursor(); err != nil {
+		return nil, err
 	}
 
 	u, err := addOptions(DevicesEndpoint, opt)
@@ -145,18 +154,8 @@ func (s ProvisioningService) RegisterNewDevice(body DeviceCreateRequest) (*Devic
 
 // Devices ...
 func (s ProvisioningService) Devices(relationshipLink string, opt *PagingOptions) (*DevicesResponse, error) {
-	if opt.Next != "" {
-		req, err := s.client.NewRequestWithRelationshipURL(http.MethodGet, opt.Next, nil)
-		if err != nil {
-			return nil, err
-		}
-
-		r := &DevicesResponse{}
-		if _, err := s.client.Do(req, r); err != nil {
-			return nil, err
-		}
-
-		return r, nil
+	if err := opt.UpdateCursor(); err != nil {
+		return nil, err
 	}
 
 	u, err := addOptions(relationshipLink, opt)

@@ -8,11 +8,27 @@ import (
 // CertificatesEndpoint ...
 const CertificatesEndpoint = "certificates"
 
+// ListCertificatesSortOption ...
+type ListCertificatesSortOption string
+
+// ListCertificatesSortOptions ...
+const (
+	ListCertificatesSortOptionDisplayName         ListCertificatesSortOption = "displayName"
+	ListCertificatesSortOptionDisplayNameDesc     ListCertificatesSortOption = "-displayName"
+	ListCertificatesSortOptionCertificateType     ListCertificatesSortOption = "certificateType"
+	ListCertificatesSortOptionCertificateTypeDesc ListCertificatesSortOption = "-certificateType"
+	ListCertificatesSortOptionSerialNumber        ListCertificatesSortOption = "serialNumber"
+	ListCertificatesSortOptionSerialNumberDesc    ListCertificatesSortOption = "-serialNumber"
+	ListCertificatesSortOptionID                  ListCertificatesSortOption = "id"
+	ListCertificatesSortOptionIDDesc              ListCertificatesSortOption = "-id"
+)
+
 // ListCertificatesOptions ...
 type ListCertificatesOptions struct {
 	PagingOptions
-	FilterSerialNumber    string          `url:"filter[serialNumber],omitempty"`
-	FilterCertificateType CertificateType `url:"filter[certificateType],omitempty"`
+	FilterSerialNumber    string                     `url:"filter[serialNumber],omitempty"`
+	FilterCertificateType CertificateType            `url:"filter[certificateType],omitempty"`
+	Sort                  ListCertificatesSortOption `url:"sort,omitempty"`
 }
 
 // CertificateType ...
@@ -53,22 +69,13 @@ type Certificate struct {
 type CertificatesResponse struct {
 	Data  []Certificate      `json:"data"`
 	Links PagedDocumentLinks `json:"links,omitempty"`
+	Meta  PagingInformation  `json:"meta,omitempty"`
 }
 
 // ListCertificates ...
 func (s ProvisioningService) ListCertificates(opt *ListCertificatesOptions) (*CertificatesResponse, error) {
-	if opt.Next != "" {
-		req, err := s.client.NewRequestWithRelationshipURL(http.MethodGet, opt.Next, nil)
-		if err != nil {
-			return nil, err
-		}
-
-		r := &CertificatesResponse{}
-		if _, err := s.client.Do(req, r); err != nil {
-			return nil, err
-		}
-
-		return r, nil
+	if err := opt.UpdateCursor(); err != nil {
+		return nil, err
 	}
 
 	u, err := addOptions(CertificatesEndpoint, opt)
@@ -108,18 +115,8 @@ func (s ProvisioningService) FetchCertificate(serialNumber string) (Certificate,
 
 // Certificates ...
 func (s ProvisioningService) Certificates(relationshipLink string, opt *PagingOptions) (*CertificatesResponse, error) {
-	if opt.Next != "" {
-		req, err := s.client.NewRequestWithRelationshipURL(http.MethodGet, opt.Next, nil)
-		if err != nil {
-			return nil, err
-		}
-
-		r := &CertificatesResponse{}
-		if _, err := s.client.Do(req, r); err != nil {
-			return nil, err
-		}
-
-		return r, err
+	if err := opt.UpdateCursor(); err != nil {
+		return nil, err
 	}
 
 	u, err := addOptions(relationshipLink, opt)
