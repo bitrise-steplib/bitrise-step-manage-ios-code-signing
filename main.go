@@ -236,9 +236,7 @@ func main() {
 		logger.Warnf("Automatic code signing failed: %s", err)
 		logger.Println()
 		logger.Infof("Falling back to manually managed codesigning assets.")
-
-		err := prepareManualAssets(logger, certs, fallbackProfileDownloader, assetWriter)
-		if err != nil {
+		if err := prepareManualAssets(logger, certs, fallbackProfileDownloader, assetWriter); err != nil {
 			failf(fmt.Sprintf("Automatic code signing failed: %s", err))
 		}
 	} else {
@@ -251,7 +249,7 @@ func main() {
 	fmt.Println()
 	logger.Infof("Exporting outputs")
 	if len(codesignAssetsByDistributionType) == 0 {
-		logger.Warnf("Skipping ouptut export, as fallback provisioning profiles are used.")
+		logger.Warnf("Skipping output export, as fallback provisioning profiles are used.")
 		return
 	}
 
