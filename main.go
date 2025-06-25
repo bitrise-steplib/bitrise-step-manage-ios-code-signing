@@ -20,6 +20,7 @@ import (
 	"github.com/bitrise-io/go-xcode/v2/autocodesign/devportalclient"
 	"github.com/bitrise-io/go-xcode/v2/autocodesign/keychain"
 	"github.com/bitrise-io/go-xcode/v2/autocodesign/localcodesignasset"
+	"github.com/bitrise-io/go-xcode/v2/autocodesign/profiledownloader"
 	"github.com/bitrise-io/go-xcode/v2/autocodesign/projectmanager"
 	"github.com/bitrise-io/go-xcode/v2/codesign"
 	"github.com/bitrise-io/go-xcode/v2/devportalservice"
@@ -49,6 +50,39 @@ func downloadCertificates(certDownloader autocodesign.CertificateProvider, logge
 	}
 
 	return certificates, nil
+}
+
+func installCertificates(certificates []certificateutil.CertificateInfoModel, assetInstaller autocodesign.AssetWriter) error {
+	for _, cert := range certificates {
+		// Empty passphrase provided, as already parsed certificate + private key
+		if err := assetInstaller.InstallCertificate(cert); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func prepareManualAssets(logger log.Logger, certificates []certificateutil.CertificateInfoModel, fallbackProfileDownloader autocodesign.ProfileProvider, assetInstaller autocodesign.AssetWriter) error {
+	if err := installCertificates(certificates, assetInstaller); err != nil {
+		return err
+	}
+
+	profiles, err := fallbackProfileDownloader.GetProfiles()
+	if err != nil {
+		return fmt.Errorf("failed to fetch profiles: %w", err)
+	}
+
+	logger.Printf("Installing manual profiles:")
+	for _, profile := range profiles {
+		logger.Printf("%s", profile.Info.String(certificates...))
+
+		if err := assetInstaller.InstallProfile(profile.Profile); err != nil {
+			return fmt.Errorf("failed to install profile: %w", err)
+		}
+	}
+
+	return nil
 }
 
 func main() {
@@ -105,12 +139,13 @@ func main() {
 	}
 
 	codesignInputs := codesign.Input{
-		AuthType:                  authType,
-		DistributionMethod:        cfg.Distribution,
-		CertificateURLList:        cfg.CertificateURLList,
-		CertificatePassphraseList: cfg.CertificatePassphraseList,
-		KeychainPath:              cfg.KeychainPath,
-		KeychainPassword:          cfg.KeychainPassword,
+		AuthType:                     authType,
+		DistributionMethod:           cfg.Distribution,
+		CertificateURLList:           cfg.CertificateURLList,
+		CertificatePassphraseList:    cfg.CertificatePassphraseList,
+		KeychainPath:                 cfg.KeychainPath,
+		KeychainPassword:             cfg.KeychainPassword,
+		FallbackProvisioningProfiles: cfg.FallbackProvisioningProfileURLs,
 	}
 
 	codesignConfig, err := codesign.ParseConfig(codesignInputs, cmdFactory)
@@ -148,10 +183,12 @@ func main() {
 		failf(fmt.Sprintf("failed to initialize keychain: %s", err))
 	}
 
+	client := retry.NewHTTPClient().StandardClient()
 	devPortalClientFactory := devportalclient.NewFactory(logger, fileManager)
-	certDownloader := certdownloader.NewDownloader(codesignConfig.CertificatesAndPassphrases, retry.NewHTTPClient().StandardClient())
+	certDownloader := certdownloader.NewDownloader(codesignConfig.CertificatesAndPassphrases, client)
 	assetWriter := codesignasset.NewWriter(*keychain)
 	localCodesignAssetManager := localcodesignasset.NewManager(localcodesignasset.NewProvisioningProfileProvider(), localcodesignasset.NewProvisioningProfileConverter())
+	fallbackProfileDownloader := profiledownloader.New(codesignConfig.FallbackProvisioningProfiles, client)
 
 	devPortalClient, err := devPortalClientFactory.Create(appleAuthCredentials, cfg.TeamID)
 	if err != nil {
@@ -191,16 +228,30 @@ func main() {
 		VerboseLog:              cfg.VerboseLog,
 	})
 	if err != nil {
-		failf(fmt.Sprintf("Automatic code signing failed: %s", err))
-	}
+		if !fallbackProfileDownloader.IsAvailable() {
+			failf(fmt.Sprintf("Automatic code signing failed: %s", err))
+		}
 
-	if err := project.ForceCodesignAssets(distribution, codesignAssetsByDistributionType); err != nil {
-		failf(fmt.Sprintf("Failed to force codesign settings: %s", err))
+		logger.Println()
+		logger.Warnf("Automatic code signing failed: %s", err)
+		logger.Println()
+		logger.Infof("Falling back to manually managed codesigning assets.")
+		if err := prepareManualAssets(logger, certs, fallbackProfileDownloader, assetWriter); err != nil {
+			failf(fmt.Sprintf("Automatic code signing failed: %s", err))
+		}
+	} else {
+		if err := project.ForceCodesignAssets(distribution, codesignAssetsByDistributionType); err != nil {
+			failf(fmt.Sprintf("Failed to force codesign settings: %s", err))
+		}
 	}
 
 	// Export output
 	fmt.Println()
 	logger.Infof("Exporting outputs")
+	if len(codesignAssetsByDistributionType) == 0 {
+		logger.Warnf("Skipping output export, as fallback provisioning profiles are used.")
+		return
+	}
 
 	teamID := codesignAssetsByDistributionType[distribution].Certificate.TeamID
 	outputs := map[string]string{
