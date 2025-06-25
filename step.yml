@@ -108,18 +108,6 @@ inputs:
 
       If not specified, the default Build Configuration will be used.
 
-- fallback_provisioning_profile_url_list:
-  opts:
-    title: Fallback provisioning profile URLs
-    description: |
-      If set, provided provisioning profiles will be used on Automatic code signing error.
-      URL of the provisioning profile to download. Multiple URLs can be specified, separated by a newline or pipe (`|`) character.
-      You can specify a local path as well, using the `file://` scheme.
-      For example: `file://./BuildAnything.mobileprovision`.
-      Can also provide a local directory that contains files with `.mobileprovision` extension.
-      For example: `./profilesDirectory/`
-    is_sensitive: true
-
 # Options
 
 - sign_uitest_targets: "no"
@@ -166,6 +154,19 @@ inputs:
       The Apple Developer Portal team to use for downloading code signing assets.
 
       Defining this is only required when Apple Service Connection method is set to `apple-id` and the connected account belongs to multiple teams.
+
+- fallback_provisioning_profile_url_list:
+  opts:
+    category: Options
+    title: Fallback provisioning profile URLs
+    description: |
+      If set, provided provisioning profiles will be used on Automatic code signing error.
+      URL of the provisioning profile to download. Multiple URLs can be specified, separated by a newline or pipe (`|`) character.
+      You can specify a local path as well, using the `file://` scheme.
+      For example: `file://./BuildAnything.mobileprovision`.
+      Can also provide a local directory that contains files with `.mobileprovision` extension.
+      For example: `./profilesDirectory/`
+    is_sensitive: true
 
 # Build environment
 

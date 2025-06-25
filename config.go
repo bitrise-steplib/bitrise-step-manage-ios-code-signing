@@ -10,18 +10,18 @@ import (
 
 // Config holds the step inputs
 type Config struct {
-	Distribution                    string `env:"distribution_method,opt[development,app-store,ad-hoc,enterprise]"`
-	ProjectPath                     string `env:"project_path,dir"`
-	Scheme                          string `env:"scheme,required"`
-	Configuration                   string `env:"configuration"`
-	FallbackProvisioningProfileURLs string `env:"fallback_provisioning_profile_url_list"`
+	Distribution  string `env:"distribution_method,opt[development,app-store,ad-hoc,enterprise]"`
+	ProjectPath   string `env:"project_path,dir"`
+	Scheme        string `env:"scheme,required"`
+	Configuration string `env:"configuration"`
 
 	BitriseConnection string `env:"apple_service_connection,opt[api-key,apple-id]"`
 
-	RegisterTestDevices bool   `env:"register_test_devices,opt[yes,no]"`
-	MinProfileDaysValid int    `env:"min_profile_validity,required"`
-	SignUITestTargets   bool   `env:"sign_uitest_targets,opt[yes,no]"`
-	TeamID              string `env:"apple_team_id"`
+	RegisterTestDevices             bool   `env:"register_test_devices,opt[yes,no]"`
+	MinProfileDaysValid             int    `env:"min_profile_validity,required"`
+	SignUITestTargets               bool   `env:"sign_uitest_targets,opt[yes,no]"`
+	TeamID                          string `env:"apple_team_id"`
+	FallbackProvisioningProfileURLs string `env:"fallback_provisioning_profile_url_list"`
 
 	CertificateURLList        string          `env:"certificate_url_list,required"`
 	CertificatePassphraseList stepconf.Secret `env:"passphrase_list"`
