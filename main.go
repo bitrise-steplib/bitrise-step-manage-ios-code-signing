@@ -228,7 +228,7 @@ func main() {
 		VerboseLog:              cfg.VerboseLog,
 	})
 	if err != nil {
-		if fallbackProfileDownloader.IsAvailable() {
+		if !fallbackProfileDownloader.IsAvailable() {
 			failf(fmt.Sprintf("Automatic code signing failed: %s", err))
 		}
 
