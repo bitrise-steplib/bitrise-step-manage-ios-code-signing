@@ -26,7 +26,6 @@ github.com/bitrise-io/go-utils/pathutil
 github.com/bitrise-io/go-utils/pretty
 github.com/bitrise-io/go-utils/retry
 github.com/bitrise-io/go-utils/sliceutil
-github.com/bitrise-io/go-utils/ziputil
 # github.com/bitrise-io/go-utils/v2 v2.0.0-alpha.23
 ## explicit; go 1.17
 github.com/bitrise-io/go-utils/v2/analytics
@@ -40,19 +39,19 @@ github.com/bitrise-io/go-utils/v2/retryhttp
 # github.com/bitrise-io/go-xcode v1.3.0
 ## explicit; go 1.20
 github.com/bitrise-io/go-xcode/certificateutil
+github.com/bitrise-io/go-xcode/export
 github.com/bitrise-io/go-xcode/exportoptions
 github.com/bitrise-io/go-xcode/models
 github.com/bitrise-io/go-xcode/plistutil
 github.com/bitrise-io/go-xcode/profileutil
 github.com/bitrise-io/go-xcode/utility
-github.com/bitrise-io/go-xcode/xcarchive
 github.com/bitrise-io/go-xcode/xcodebuild
 github.com/bitrise-io/go-xcode/xcodeproject/schemeint
 github.com/bitrise-io/go-xcode/xcodeproject/serialized
 github.com/bitrise-io/go-xcode/xcodeproject/xcodeproj
 github.com/bitrise-io/go-xcode/xcodeproject/xcscheme
 github.com/bitrise-io/go-xcode/xcodeproject/xcworkspace
-# github.com/bitrise-io/go-xcode/v2 v2.0.0-alpha.60
+# github.com/bitrise-io/go-xcode/v2 v2.0.0-alpha.62.0.20250819113601-18f0955ce962
 ## explicit; go 1.22
 github.com/bitrise-io/go-xcode/v2/autocodesign
 github.com/bitrise-io/go-xcode/v2/autocodesign/certdownloader
@@ -68,7 +67,9 @@ github.com/bitrise-io/go-xcode/v2/autocodesign/profiledownloader
 github.com/bitrise-io/go-xcode/v2/autocodesign/projectmanager
 github.com/bitrise-io/go-xcode/v2/codesign
 github.com/bitrise-io/go-xcode/v2/devportalservice
+github.com/bitrise-io/go-xcode/v2/exportoptionsgenerator
 github.com/bitrise-io/go-xcode/v2/xcarchive
+github.com/bitrise-io/go-xcode/v2/xcodeversion
 # github.com/davecgh/go-spew v1.1.1
 ## explicit
 github.com/davecgh/go-spew/spew
@@ -108,6 +109,9 @@ github.com/pkg/errors
 github.com/pmezard/go-difflib/difflib
 # github.com/rogpeppe/go-internal v1.10.0
 ## explicit; go 1.19
+# github.com/ryanuber/go-glob v1.0.0
+## explicit
+github.com/ryanuber/go-glob
 # github.com/stretchr/objx v0.5.2
 ## explicit; go 1.20
 github.com/stretchr/objx
