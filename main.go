@@ -137,7 +137,7 @@ func main() {
 		ExportMethod:               codesignConfig.DistributionMethod,
 		XcodeMajorVersion:          int(xcodebuildVersion.MajorVersion),
 		RegisterTestDevices:        cfg.RegisterTestDevices,
-		SignUITests:                false,
+		SignUITests:                cfg.SignUITestTargets,
 		MinDaysProfileValidity:     cfg.MinProfileDaysValid,
 		IsVerboseLog:               cfg.VerboseLog,
 	}
