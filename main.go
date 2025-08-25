@@ -173,21 +173,26 @@ func main() {
 		return
 	}
 
-	teamID := assets[codesignConfig.DistributionMethod].Certificate.TeamID
+	settings, ok := assets[codesignConfig.DistributionMethod]
+	if !ok {
+		failf("No codesign settings ensured for the selected distribution type: %s", codesignConfig.DistributionMethod)
+	}
+
+	teamID := settings.Certificate.TeamID
 	outputs := map[string]string{
 		"BITRISE_EXPORT_METHOD":  cfg.Distribution,
 		"BITRISE_DEVELOPER_TEAM": teamID,
 	}
 
-	settings, ok := assets[autocodesign.Development]
+	developmentSettings, ok := assets[autocodesign.Development]
 	if ok {
-		outputs["BITRISE_DEVELOPMENT_CODESIGN_IDENTITY"] = settings.Certificate.CommonName
+		outputs["BITRISE_DEVELOPMENT_CODESIGN_IDENTITY"] = developmentSettings.Certificate.CommonName
 
 		bundleID, err := project.MainTargetBundleID()
 		if err != nil {
 			failf("Failed to read bundle ID for the main target: %s", err)
 		}
-		profile, ok := settings.ArchivableTargetProfilesByBundleID[bundleID]
+		profile, ok := developmentSettings.ArchivableTargetProfilesByBundleID[bundleID]
 		if !ok {
 			failf("No provisioning profile ensured for the main target")
 		}
@@ -196,11 +201,6 @@ func main() {
 	}
 
 	if codesignConfig.DistributionMethod != autocodesign.Development {
-		settings, ok := assets[codesignConfig.DistributionMethod]
-		if !ok {
-			failf("No codesign settings ensured for the selected distribution type: %s", codesignConfig.DistributionMethod)
-		}
-
 		outputs["BITRISE_PRODUCTION_CODESIGN_IDENTITY"] = settings.Certificate.CommonName
 
 		bundleID, err := project.MainTargetBundleID()
