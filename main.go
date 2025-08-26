@@ -168,11 +168,6 @@ func main() {
 	// Export output
 	fmt.Println()
 	logger.Infof("Exporting outputs")
-	if len(assets) == 0 {
-		logger.Warnf("Skipping output export, as fallback provisioning profiles are used.")
-		return
-	}
-
 	settings, ok := assets[codesignConfig.DistributionMethod]
 	if !ok {
 		failf("No codesign settings ensured for the selected distribution type: %s", codesignConfig.DistributionMethod)
