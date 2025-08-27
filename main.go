@@ -12,7 +12,6 @@ import (
 	"github.com/bitrise-io/go-utils/v2/env"
 	"github.com/bitrise-io/go-utils/v2/fileutil"
 	"github.com/bitrise-io/go-utils/v2/log"
-	"github.com/bitrise-io/go-xcode/certificateutil"
 	"github.com/bitrise-io/go-xcode/utility"
 	"github.com/bitrise-io/go-xcode/v2/autocodesign"
 	"github.com/bitrise-io/go-xcode/v2/autocodesign/certdownloader"
@@ -30,59 +29,6 @@ import (
 func failf(format string, args ...interface{}) {
 	v1log.Errorf(format, args...)
 	os.Exit(1)
-}
-
-func downloadCertificates(certDownloader autocodesign.CertificateProvider, logger log.Logger) ([]certificateutil.CertificateInfoModel, error) {
-	certificates, err := certDownloader.GetCertificates()
-	if err != nil {
-		return nil, fmt.Errorf("failed to download certificates: %s", err)
-	}
-
-	if len(certificates) == 0 {
-		logger.Warnf("No certificates are uploaded.")
-
-		return nil, nil
-	}
-
-	logger.Printf("%d certificates downloaded:", len(certificates))
-	for _, cert := range certificates {
-		logger.Printf("- %s", cert)
-	}
-
-	return certificates, nil
-}
-
-func installCertificates(certificates []certificateutil.CertificateInfoModel, assetInstaller autocodesign.AssetWriter) error {
-	for _, cert := range certificates {
-		// Empty passphrase provided, as already parsed certificate + private key
-		if err := assetInstaller.InstallCertificate(cert); err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
-
-func prepareManualAssets(logger log.Logger, certificates []certificateutil.CertificateInfoModel, fallbackProfileDownloader autocodesign.ProfileProvider, assetInstaller autocodesign.AssetWriter) error {
-	if err := installCertificates(certificates, assetInstaller); err != nil {
-		return err
-	}
-
-	profiles, err := fallbackProfileDownloader.GetProfiles()
-	if err != nil {
-		return fmt.Errorf("failed to fetch profiles: %w", err)
-	}
-
-	logger.Printf("Installing manual profiles:")
-	for _, profile := range profiles {
-		logger.Printf("%s", profile.Info.String(certificates...))
-
-		if err := assetInstaller.InstallProfile(profile.Profile); err != nil {
-			return fmt.Errorf("failed to install profile: %w", err)
-		}
-	}
-
-	return nil
 }
 
 func main() {
@@ -128,11 +74,6 @@ func main() {
 		failf(err.Error())
 	}
 
-	appLayout, err := project.GetAppLayout(cfg.SignUITestTargets)
-	if err != nil {
-		failf(err.Error())
-	}
-
 	authType, err := parseAuthType(cfg.BitriseConnection)
 	if err != nil {
 		failf("Invalid input: unexpected value for Bitrise Apple Developer Connection (%s)", cfg.BitriseConnection)
@@ -154,11 +95,10 @@ func main() {
 	}
 
 	fileManager := fileutil.NewFileManager()
+	devPortalClientFactory := devportalclient.NewFactory(logger, fileManager)
 	var connection *devportalservice.AppleDeveloperConnection
 	if cfg.BuildURL != "" && cfg.BuildAPIToken != "" {
-		f := devportalclient.NewFactory(logger, fileManager)
-		connection, err = f.CreateBitriseConnection(cfg.BuildURL, cfg.BuildAPIToken)
-		if err != nil {
+		if connection, err = devPortalClientFactory.CreateBitriseConnection(cfg.BuildURL, cfg.BuildAPIToken); err != nil {
 			failf(err.Error())
 		}
 	} else {
@@ -184,90 +124,70 @@ func main() {
 	}
 
 	client := retry.NewHTTPClient().StandardClient()
-	devPortalClientFactory := devportalclient.NewFactory(logger, fileManager)
 	certDownloader := certdownloader.NewDownloader(codesignConfig.CertificatesAndPassphrases, client)
 	assetWriter := codesignasset.NewWriter(*keychain)
 	localCodesignAssetManager := localcodesignasset.NewManager(localcodesignasset.NewProvisioningProfileProvider(), localcodesignasset.NewProvisioningProfileConverter())
 	fallbackProfileDownloader := profiledownloader.New(codesignConfig.FallbackProvisioningProfiles, client)
 
-	devPortalClient, err := devPortalClientFactory.Create(appleAuthCredentials, cfg.TeamID)
-	if err != nil {
-		failf(err.Error())
-	}
-
-	if err := devPortalClient.Login(); err != nil {
-		failf(err.Error())
-	}
-
-	fmt.Println()
-	logger.TDebugf("Downloading certificates")
-	certs, err := downloadCertificates(certDownloader, logger)
-	if err != nil {
-		failf(err.Error())
-	}
-
-	typeToLocalCerts, err := autocodesign.GetValidLocalCertificates(certs)
-	if err != nil {
-		failf(err.Error())
-	}
-
-	// Create codesign manager
-	manager := autocodesign.NewCodesignAssetManager(devPortalClient, assetWriter, localCodesignAssetManager)
-
 	// Auto codesign
-	distribution := cfg.DistributionType()
+	opts := codesign.Opts{
+		AuthType:                   authType,
+		ShouldConsiderXcodeSigning: false,
+		TeamID:                     cfg.TeamID,
+		ExportMethod:               codesignConfig.DistributionMethod,
+		XcodeMajorVersion:          int(xcodebuildVersion.MajorVersion),
+		RegisterTestDevices:        cfg.RegisterTestDevices,
+		SignUITests:                cfg.SignUITestTargets,
+		MinDaysProfileValidity:     cfg.MinProfileDaysValid,
+		IsVerboseLog:               cfg.VerboseLog,
+	}
+
 	var testDevices []devportalservice.TestDevice
 	if cfg.RegisterTestDevices && connection != nil {
 		testDevices = connection.TestDevices
 	}
-	codesignAssetsByDistributionType, err := manager.EnsureCodesignAssets(appLayout, autocodesign.CodesignAssetsOpts{
-		DistributionType:        distribution,
-		TypeToLocalCertificates: typeToLocalCerts,
-		BitriseTestDevices:      testDevices,
-		MinProfileValidityDays:  cfg.MinProfileDaysValid,
-		VerboseLog:              cfg.VerboseLog,
-	})
-	if err != nil {
-		if !fallbackProfileDownloader.IsAvailable() {
-			failf(fmt.Sprintf("Automatic code signing failed: %s", err))
-		}
 
-		logger.Println()
-		logger.Warnf("Automatic code signing failed: %s", err)
-		logger.Println()
-		logger.Infof("Falling back to manually managed codesigning assets.")
-		if err := prepareManualAssets(logger, certs, fallbackProfileDownloader, assetWriter); err != nil {
-			failf(fmt.Sprintf("Automatic code signing failed: %s", err))
-		}
-	} else {
-		if err := project.ForceCodesignAssets(distribution, codesignAssetsByDistributionType); err != nil {
-			failf(fmt.Sprintf("Failed to force codesign settings: %s", err))
-		}
+	codesignManager := codesign.NewManagerWithProject(
+		opts,
+		appleAuthCredentials,
+		testDevices,
+		devPortalClientFactory,
+		certDownloader,
+		fallbackProfileDownloader,
+		assetWriter,
+		localCodesignAssetManager,
+		localcodesignasset.NewProvisioningProfileConverter(),
+		project,
+		logger,
+	)
+	_, assets, err := codesignManager.PrepareCodesigning()
+	if err != nil {
+		failf("Failed to prepare codesigning: %s", err)
 	}
 
 	// Export output
 	fmt.Println()
 	logger.Infof("Exporting outputs")
-	if len(codesignAssetsByDistributionType) == 0 {
-		logger.Warnf("Skipping output export, as fallback provisioning profiles are used.")
-		return
+	settings, ok := assets[codesignConfig.DistributionMethod]
+	if !ok {
+		failf("No codesign settings ensured for the selected distribution type: %s", codesignConfig.DistributionMethod)
 	}
 
-	teamID := codesignAssetsByDistributionType[distribution].Certificate.TeamID
+	teamID := settings.Certificate.TeamID
 	outputs := map[string]string{
 		"BITRISE_EXPORT_METHOD":  cfg.Distribution,
 		"BITRISE_DEVELOPER_TEAM": teamID,
 	}
 
-	settings, ok := codesignAssetsByDistributionType[autocodesign.Development]
+	developmentSettings, ok := assets[autocodesign.Development]
 	if ok {
-		outputs["BITRISE_DEVELOPMENT_CODESIGN_IDENTITY"] = settings.Certificate.CommonName
+		outputs["BITRISE_DEVELOPMENT_CODESIGN_IDENTITY"] = developmentSettings.Certificate.CommonName
 
 		bundleID, err := project.MainTargetBundleID()
 		if err != nil {
 			failf("Failed to read bundle ID for the main target: %s", err)
 		}
-		profile, ok := settings.ArchivableTargetProfilesByBundleID[bundleID]
+		profile, ok := developmentSettings.ArchivableTargetProfilesByBundleID[bundleID]
 		if !ok {
 			failf("No provisioning profile ensured for the main target")
 		}
@@ -275,12 +195,7 @@ func main() {
 		outputs["BITRISE_DEVELOPMENT_PROFILE"] = profile.Attributes().UUID
 	}
 
-	if distribution != autocodesign.Development {
-		settings, ok := codesignAssetsByDistributionType[distribution]
-		if !ok {
-			failf("No codesign settings ensured for the selected distribution type: %s", distribution)
-		}
-
+	if codesignConfig.DistributionMethod != autocodesign.Development {
 		outputs["BITRISE_PRODUCTION_CODESIGN_IDENTITY"] = settings.Certificate.CommonName
 
 		bundleID, err := project.MainTargetBundleID()
