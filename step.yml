@@ -46,11 +46,12 @@ source_code_url: https://github.com/bitrise-steplib/bitrise-step-manage-ios-code
 support_url: https://github.com/bitrise-steplib/bitrise-step-manage-ios-code-signing/issues
 
 project_type_tags:
-- ios
 - cordova
-- ionic
-- react-native
 - flutter
+- ionic
+- ios
+- kotlin-multiplatform
+- react-native
 
 type_tags:
 - code-sign
