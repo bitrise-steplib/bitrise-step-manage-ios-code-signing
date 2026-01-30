@@ -11,8 +11,8 @@ import (
 	"strings"
 
 	"github.com/bitrise-io/go-steputils/v2/stepconf"
+	"github.com/bitrise-io/go-utils/bb_slice_util/sliceutil"
 	"github.com/bitrise-io/go-utils/pathutil"
-	"github.com/bitrise-io/go-utils/sliceutil"
 	"github.com/bitrise-io/go-utils/v2/command"
 	"github.com/bitrise-io/go-utils/v2/log"
 	"github.com/bitrise-io/go-utils/v2/retryhttp"
@@ -164,7 +164,15 @@ func splitCertificatesAndPassphrases(certURLList string, certPassphraseList stri
 
 // SplitAndClean ...
 func splitAndClean(list string, sep string, omitEmpty bool) (items []string) {
-	return sliceutil.CleanWhitespace(strings.Split(list, sep), omitEmpty)
+	trimmed := sliceutil.Map(strings.Split(list, sep), func(s string) string {
+		return strings.TrimSpace(s)
+	})
+	if omitEmpty {
+		return sliceutil.Filter(trimmed, func(s string) bool {
+			return s != ""
+		})
+	}
+	return trimmed
 }
 
 // parseFallbackProvisioningProfiles validates and expands profilesList.

@@ -7,8 +7,8 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/bitrise-io/go-utils/bb/slice_util/sliceutil"
 	"github.com/bitrise-io/go-utils/pathutil"
-	"github.com/bitrise-io/go-utils/sliceutil"
 	"github.com/bitrise-io/go-xcode/xcodeproject/serialized"
 )
 
@@ -60,7 +60,7 @@ func appIconSetPaths(project Proj, projectPath string, objects serialized.Object
 			}
 			appIcons = append(appIcons, appIconSetPaths...)
 		}
-		targetToAppIcons[target.ID] = sliceutil.UniqueStringSlice(appIcons)
+		targetToAppIcons[target.ID] = sliceutil.Unique(appIcons)
 	}
 
 	return targetToAppIcons, nil
