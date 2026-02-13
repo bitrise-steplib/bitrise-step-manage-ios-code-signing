@@ -145,8 +145,6 @@ func (c *BitriseClient) GetAppleDeveloperConnection() (*AppleDeveloperConnection
 			return nil, fmt.Errorf("invalid authentication credentials, empty private_key in response (%s)", rawCreds)
 		}
 
-		fmt.Printf("Enterprise/Non-Enterprise: %t", d.APIKeyConnection.EnterpriseAccount)
-
 		d.APIKeyConnection.PrivateKey = privateKeyWithHeader(d.APIKeyConnection.PrivateKey)
 	}
 
