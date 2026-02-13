@@ -65,7 +65,8 @@ func main() {
 	// Analyze project
 	fmt.Println()
 	logger.Infof("Analyzing project")
-	project, err := projectmanager.NewProject(projectmanager.InitParams{
+	projectFactory := projectmanager.NewFactory(logger, env.NewRepository(), projectmanager.BuildActionArchive)
+	project, err := projectFactory.Create(projectmanager.InitParams{
 		ProjectOrWorkspacePath: cfg.ProjectPath,
 		SchemeName:             cfg.Scheme,
 		ConfigurationName:      cfg.Configuration,
