@@ -22,7 +22,6 @@ github.com/bitrise-io/go-utils/httputil
 github.com/bitrise-io/go-utils/log
 github.com/bitrise-io/go-utils/pathutil
 github.com/bitrise-io/go-utils/pretty
-github.com/bitrise-io/go-utils/retry
 github.com/bitrise-io/go-utils/sliceutil
 # github.com/bitrise-io/go-utils/v2 v2.0.0-alpha.34.0.20260424152942-70f02e371123
 ## explicit; go 1.21
@@ -50,7 +49,7 @@ github.com/bitrise-io/go-xcode/xcodeproject/serialized
 github.com/bitrise-io/go-xcode/xcodeproject/xcodeproj
 github.com/bitrise-io/go-xcode/xcodeproject/xcscheme
 github.com/bitrise-io/go-xcode/xcodeproject/xcworkspace
-# github.com/bitrise-io/go-xcode/v2 v2.0.0-alpha.83.0.20260427072533-e31e50bf2aa3
+# github.com/bitrise-io/go-xcode/v2 v2.0.0-alpha.83.0.20260428132336-7603ddfd8ae9
 ## explicit; go 1.22
 github.com/bitrise-io/go-xcode/v2/autocodesign
 github.com/bitrise-io/go-xcode/v2/autocodesign/certdownloader
