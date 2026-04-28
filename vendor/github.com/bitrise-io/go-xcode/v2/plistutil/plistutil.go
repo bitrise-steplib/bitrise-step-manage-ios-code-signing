@@ -4,8 +4,7 @@ import (
 	"errors"
 	"time"
 
-	"github.com/bitrise-io/go-utils/fileutil"
-	"howett.net/plist"
+	"github.com/bitrise-io/go-plist"
 )
 
 // PlistData ...
@@ -18,15 +17,6 @@ func NewPlistDataFromContent(plistContent string) (PlistData, error) {
 		return PlistData{}, err
 	}
 	return data, nil
-}
-
-// NewPlistDataFromFile ...
-func NewPlistDataFromFile(plistPth string) (PlistData, error) {
-	content, err := fileutil.ReadStringFromFile(plistPth)
-	if err != nil {
-		return PlistData{}, err
-	}
-	return NewPlistDataFromContent(content)
 }
 
 // GetString ...
@@ -117,7 +107,7 @@ func (data PlistData) GetUInt64Array(forKey string) ([]uint64, bool) {
 		return nil, false
 	}
 
-	array := []uint64{}
+	var array []uint64
 	for _, v := range casted {
 		casted, ok := v.(uint64)
 		if !ok {
@@ -145,7 +135,7 @@ func (data PlistData) GetStringArray(forKey string) ([]string, bool) {
 		return nil, false
 	}
 
-	array := []string{}
+	var array []string
 	for _, v := range casted {
 		casted, ok := v.(string)
 		if !ok {
@@ -173,7 +163,7 @@ func (data PlistData) GetByteArrayArray(forKey string) ([][]byte, bool) {
 		return nil, false
 	}
 
-	array := [][]byte{}
+	var array [][]byte
 	for _, v := range casted {
 		casted, ok := v.([]byte)
 		if !ok {

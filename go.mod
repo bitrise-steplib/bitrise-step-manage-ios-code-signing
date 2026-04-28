@@ -4,11 +4,11 @@ go 1.22
 
 require (
 	github.com/bitrise-io/go-steputils v1.0.6
-	github.com/bitrise-io/go-steputils/v2 v2.0.0-alpha.37
+	github.com/bitrise-io/go-steputils/v2 v2.0.0-alpha.49
 	github.com/bitrise-io/go-utils v1.0.15
-	github.com/bitrise-io/go-utils/v2 v2.0.0-alpha.23
-	github.com/bitrise-io/go-xcode v1.3.0
-	github.com/bitrise-io/go-xcode/v2 v2.0.0-alpha.64
+	github.com/bitrise-io/go-utils/v2 v2.0.0-alpha.34.0.20260424152942-70f02e371123
+	github.com/bitrise-io/go-xcode v1.3.3
+	github.com/bitrise-io/go-xcode/v2 v2.0.0-alpha.83.0.20260428132336-7603ddfd8ae9
 )
 
 require (
@@ -28,7 +28,7 @@ require (
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
 	github.com/rogpeppe/go-internal v1.13.1 // indirect
-	github.com/ryanuber/go-glob v1.0.0 // indirect
+	github.com/ryanuber/go-glob v1.0.0 // indirect; indirectgo
 	github.com/stretchr/objx v0.5.2 // indirect
 	github.com/stretchr/testify v1.11.1 // indirect
 	golang.org/x/crypto v0.31.0 // indirect
