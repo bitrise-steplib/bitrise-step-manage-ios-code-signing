@@ -3,12 +3,11 @@ module github.com/bitrise-steplib/bitrise-step-manage-ios-code-signing
 go 1.22
 
 require (
-	github.com/bitrise-io/go-steputils v1.0.6
-	github.com/bitrise-io/go-steputils/v2 v2.0.0-alpha.37
+	github.com/bitrise-io/go-steputils/v2 v2.0.0-alpha.54
 	github.com/bitrise-io/go-utils v1.0.15
-	github.com/bitrise-io/go-utils/v2 v2.0.0-alpha.23
-	github.com/bitrise-io/go-xcode v1.3.0
-	github.com/bitrise-io/go-xcode/v2 v2.0.0-alpha.64
+	github.com/bitrise-io/go-utils/v2 v2.0.0-alpha.39
+	github.com/bitrise-io/go-xcode v1.3.3
+	github.com/bitrise-io/go-xcode/v2 v2.0.0-alpha.85
 )
 
 require (
