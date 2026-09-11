@@ -59,3 +59,29 @@ workflows:
         - verbose_log: "yes"
         - sign_uitest_targets: "yes"
         - register_test_devices: "no"
+
+  apple_id_service_key_workaround:
+    description: |-
+      Example of the Script step that works around the Apple ID login failure: `Service key is empty`.
+
+      Apple removed the `olympus/v1/app/config` endpoint that spaceship uses to fetch the Apple ID login
+      widget key. Spaceship reads `/tmp/spaceship_itc_service_key.txt` before calling that endpoint, so
+      writing the key there lets the login continue.
+
+      Add this Script step before any Step that uses an Apple ID based Apple Service connection.
+    steps:
+    - script:
+        title: Set the Apple ID login widget key
+        inputs:
+        - content: |-
+            #!/usr/bin/env bash
+            set -ex
+            printf '%s' 'e0b80c3bf78523bfe80974d320935bfa30add02e1bff88ec2166c6bd5a706c42' > /tmp/spaceship_itc_service_key.txt
+    - script:
+        title: Read back the Apple ID login widget key
+        inputs:
+        - content: |-
+            #!/usr/bin/env bash
+            set -ex
+            cat /tmp/spaceship_itc_service_key.txt
+            echo
