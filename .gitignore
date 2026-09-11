@@ -5,3 +5,4 @@ apple_developer_portal_data*.json
 .idea
 .bundle
 bitrise-step-manage-ios-code-signing
+bin/
