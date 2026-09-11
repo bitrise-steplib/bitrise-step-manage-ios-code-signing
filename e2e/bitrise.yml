@@ -105,7 +105,7 @@ workflows:
   test_xcode13_uitest_signing:
     envs:
     - TEST_APP_URL: https://github.com/bitrise-io/sample-xcode-13-empty.git
-    - TEST_APP_BRANCH: main
+    - TEST_APP_BRANCH: chore/bump-deployment-target-15
     - BITRISE_PROJECT_PATH: sample-xcode-13-empty.xcodeproj
     - BITRISE_SCHEME: sample-xcode-13-empty
     - BITRISE_CONFIGURATION: Debug
