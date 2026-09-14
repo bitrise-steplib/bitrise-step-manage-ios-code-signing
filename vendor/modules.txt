@@ -36,7 +36,7 @@ github.com/bitrise-io/go-utils/v2/retry
 github.com/bitrise-io/go-utils/v2/retryhttp
 github.com/bitrise-io/go-utils/v2/sliceutil
 github.com/bitrise-io/go-utils/v2/ziputil
-# github.com/bitrise-io/go-xcode v1.3.3
+# github.com/bitrise-io/go-xcode v1.3.4
 ## explicit; go 1.20
 github.com/bitrise-io/go-xcode/certificateutil
 github.com/bitrise-io/go-xcode/exportoptions
