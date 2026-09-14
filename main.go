@@ -4,14 +4,14 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/bitrise-io/go-steputils/tools"
+	"github.com/bitrise-io/go-steputils/v2/export"
 	"github.com/bitrise-io/go-steputils/v2/stepconf"
 	v1log "github.com/bitrise-io/go-utils/log"
-	"github.com/bitrise-io/go-utils/retry"
 	"github.com/bitrise-io/go-utils/v2/command"
 	"github.com/bitrise-io/go-utils/v2/env"
 	"github.com/bitrise-io/go-utils/v2/fileutil"
 	"github.com/bitrise-io/go-utils/v2/log"
+	"github.com/bitrise-io/go-utils/v2/pathutil"
 	"github.com/bitrise-io/go-xcode/utility"
 	"github.com/bitrise-io/go-xcode/v2/autocodesign"
 	"github.com/bitrise-io/go-xcode/v2/autocodesign/certdownloader"
@@ -23,32 +23,31 @@ import (
 	"github.com/bitrise-io/go-xcode/v2/autocodesign/projectmanager"
 	"github.com/bitrise-io/go-xcode/v2/codesign"
 	"github.com/bitrise-io/go-xcode/v2/devportalservice"
+	"github.com/bitrise-io/go-xcode/v2/profileutil"
 	"github.com/bitrise-io/go-xcode/xcodebuild"
 )
 
-func failf(format string, args ...interface{}) {
-	v1log.Errorf(format, args...)
-	os.Exit(1)
-}
-
 func main() {
+	logger := log.NewLogger()
+
 	// Parse and validate inputs
 	var cfg Config
-	parser := stepconf.NewInputParser(env.NewRepository())
+	envRepository := env.NewRepository()
+	parser := stepconf.NewInputParser(envRepository)
 	if err := parser.Parse(&cfg); err != nil {
-		failf("Config: %s", err)
+		failf(logger, "Config: %s", err)
 	}
 	stepconf.Print(cfg)
 
-	logger := log.NewLogger()
 	logger.EnableDebugLog(cfg.VerboseLog)
-	v1log.SetEnableDebugLog(cfg.VerboseLog) // for compatibility
+	// go-xcode's autocodesign packages still log through the v1 logger.
+	v1log.SetEnableDebugLog(cfg.VerboseLog)
 
-	cmdFactory := command.NewFactory(env.NewRepository())
+	cmdFactory := command.NewFactory(envRepository)
 
 	xcodebuildVersion, err := utility.GetXcodeVersion()
 	if err != nil {
-		failf("Failed to determine Xcode version: %s", err)
+		failf(logger, "Failed to determine Xcode version: %s", err)
 	}
 	logger.Printf("%s (%s)", xcodebuildVersion.Version, xcodebuildVersion.BuildVersion)
 
@@ -65,18 +64,19 @@ func main() {
 	// Analyze project
 	fmt.Println()
 	logger.Infof("Analyzing project")
-	project, err := projectmanager.NewProject(projectmanager.InitParams{
+	projectFactory := projectmanager.NewFactory(logger, envRepository, projectmanager.BuildActionArchive)
+	project, err := projectFactory.Create(projectmanager.InitParams{
 		ProjectOrWorkspacePath: cfg.ProjectPath,
 		SchemeName:             cfg.Scheme,
 		ConfigurationName:      cfg.Configuration,
 	})
 	if err != nil {
-		failf(err.Error())
+		failf(logger, err.Error())
 	}
 
 	authType, err := parseAuthType(cfg.BitriseConnection)
 	if err != nil {
-		failf("Invalid input: unexpected value for Bitrise Apple Developer Connection (%s)", cfg.BitriseConnection)
+		failf(logger, "Invalid input: unexpected value for Bitrise Apple Developer Connection (%s)", cfg.BitriseConnection)
 	}
 
 	codesignInputs := codesign.Input{
@@ -91,7 +91,7 @@ func main() {
 
 	codesignConfig, err := codesign.ParseConfig(codesignInputs, cmdFactory)
 	if err != nil {
-		failf(err.Error())
+		failf(logger, err.Error())
 	}
 
 	fileManager := fileutil.NewFileManager()
@@ -99,7 +99,7 @@ func main() {
 	var connection *devportalservice.AppleDeveloperConnection
 	if cfg.BuildURL != "" && cfg.BuildAPIToken != "" {
 		if connection, err = devPortalClientFactory.CreateBitriseConnection(cfg.BuildURL, cfg.BuildAPIToken); err != nil {
-			failf(err.Error())
+			failf(logger, err.Error())
 		}
 	} else {
 		logger.Warnf(`Connected Apple Developer Portal Account not found: BITRISE_BUILD_URL and BITRISE_BUILD_API_TOKEN envs are not set. 
@@ -115,19 +115,19 @@ func main() {
 	}
 	appleAuthCredentials, err := codesign.SelectConnectionCredentials(authType, connection, connectionInputs, logger)
 	if err != nil {
-		failf(err.Error())
+		failf(logger, err.Error())
 	}
 
 	keychain, err := keychain.New(cfg.KeychainPath, cfg.KeychainPassword, cmdFactory)
 	if err != nil {
-		failf(fmt.Sprintf("failed to initialize keychain: %s", err))
+		failf(logger, fmt.Sprintf("failed to initialize keychain: %s", err))
 	}
 
-	client := retry.NewHTTPClient().StandardClient()
-	certDownloader := certdownloader.NewDownloader(codesignConfig.CertificatesAndPassphrases, client)
-	assetWriter := codesignasset.NewWriter(*keychain)
+	certDownloader := certdownloader.NewDownloader(codesignConfig.CertificatesAndPassphrases, logger)
+	profileReader := profileutil.NewProfileReader(logger, fileManager, pathutil.NewPathModifier(), pathutil.NewPathProvider())
+	assetWriter := codesignasset.NewWriter(logger, *keychain, fileManager, profileReader, xcodebuildVersion.MajorVersion)
 	localCodesignAssetManager := localcodesignasset.NewManager(localcodesignasset.NewProvisioningProfileProvider(), localcodesignasset.NewProvisioningProfileConverter())
-	fallbackProfileDownloader := profiledownloader.New(codesignConfig.FallbackProvisioningProfiles, client)
+	fallbackProfileDownloader := profiledownloader.New(codesignConfig.FallbackProvisioningProfiles, logger)
 
 	// Auto codesign
 	opts := codesign.Opts{
@@ -162,7 +162,7 @@ func main() {
 	)
 	_, assets, err := codesignManager.PrepareCodesigning()
 	if err != nil {
-		failf("Failed to prepare codesigning: %s", err)
+		failf(logger, "Failed to prepare codesigning: %s", err)
 	}
 
 	// Export output
@@ -170,7 +170,7 @@ func main() {
 	logger.Infof("Exporting outputs")
 	settings, ok := assets[codesignConfig.DistributionMethod]
 	if !ok {
-		failf("No codesign settings ensured for the selected distribution type: %s", codesignConfig.DistributionMethod)
+		failf(logger, "No codesign settings ensured for the selected distribution type: %s", codesignConfig.DistributionMethod)
 	}
 
 	teamID := settings.Certificate.TeamID
@@ -185,11 +185,11 @@ func main() {
 
 		bundleID, err := project.MainTargetBundleID()
 		if err != nil {
-			failf("Failed to read bundle ID for the main target: %s", err)
+			failf(logger, "Failed to read bundle ID for the main target: %s", err)
 		}
 		profile, ok := developmentSettings.ArchivableTargetProfilesByBundleID[bundleID]
 		if !ok {
-			failf("No provisioning profile ensured for the main target")
+			failf(logger, "No provisioning profile ensured for the main target")
 		}
 
 		outputs["BITRISE_DEVELOPMENT_PROFILE"] = profile.Attributes().UUID
@@ -200,20 +200,26 @@ func main() {
 
 		bundleID, err := project.MainTargetBundleID()
 		if err != nil {
-			failf(err.Error())
+			failf(logger, err.Error())
 		}
 		profile, ok := settings.ArchivableTargetProfilesByBundleID[bundleID]
 		if !ok {
-			failf("No provisioning profile ensured for the main target")
+			failf(logger, "No provisioning profile ensured for the main target")
 		}
 
 		outputs["BITRISE_PRODUCTION_PROFILE"] = profile.Attributes().UUID
 	}
 
+	exporter := export.NewDefaultExporter(cmdFactory)
 	for k, v := range outputs {
 		logger.Donef("%s=%s", k, v)
-		if err := tools.ExportEnvironmentWithEnvman(k, v); err != nil {
-			failf("Failed to export %s=%s: %s", k, v, err)
+		if err := exporter.ExportOutput(k, v); err != nil {
+			failf(logger, "Failed to export %s=%s: %s", k, v, err)
 		}
 	}
+}
+
+func failf(logger log.Logger, format string, args ...any) {
+	logger.Errorf(format, args...)
+	os.Exit(1)
 }
