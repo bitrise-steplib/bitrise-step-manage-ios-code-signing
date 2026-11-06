@@ -140,6 +140,48 @@ workflows:
     - _check_outputs
     - _check_xcode_build_for_test
 
+  test_json_project_format:
+    description: Only Xcode 27.2 and newer can read a project in the JSON project.xcproj format.
+    steps:
+    - script:
+        title: Check if the current Xcode supports the JSON project format
+        inputs:
+        - content: |-
+            #!/bin/env bash
+            set -e
+            version=$(xcodebuild -version | head -n 1 | awk '{print $2}')
+            if printf '27.2\n%s\n' "$version" | sort -V -C; then
+              envman add --key RUN_JSON_PROJECT_FORMAT_TEST --value true
+            else
+              echo "Xcode $version does not support the JSON project format, skipping"
+            fi
+    - bitrise-run:
+        run_if: |-
+          {{ enveq "RUN_JSON_PROJECT_FORMAT_TEST" "true" }}
+        inputs:
+        - workflow_id: utility_test_json_project_format
+        - bitrise_config_path: ./e2e/bitrise.yml
+
+  utility_test_json_project_format:
+    description: |
+      Tests managed code signing on a project in the JSON project.xcproj format with
+      automatically managed signing and no shared scheme.
+    envs:
+    - TEST_APP_URL: https://github.com/bitrise-io/sample-apps-ios-json-xcproj.git
+    - TEST_APP_BRANCH: bitfall-signing
+    - BITRISE_PROJECT_PATH: sample-apps-ios-json-xcproj.xcodeproj
+    - BITRISE_SCHEME: sample-apps-ios-json-xcproj
+    - BITRISE_CONFIGURATION: Release
+    - SIGN_UITEST_TARGET: "no"
+    - REGISTER_TEST_DEVICES: "yes"
+    - INSTALL_PODS: "false"
+    - DISTRIBUTION_TYPE: development
+    - CONNECTION: api-key
+    after_run:
+    - _run
+    - _check_outputs
+    - _check_xcode_archive_json_project_format
+
   test_bundle_id:
     envs:
     - TEST_APP_URL: https://github.com/bitrise-samples/sample-apps-ios-simple-objc.git
@@ -351,6 +393,18 @@ workflows:
         - scheme: $BITRISE_SCHEME
         - configuration: $BITRISE_CONFIGURATION
         - distribution_method: $DISTRIBUTION_TYPE
+        - log_formatter: xcodebuild
+
+  _check_xcode_archive_json_project_format:
+    steps:
+    - git::https://github.com/bitrise-steplib/steps-xcode-archive.git@xcproj-tryout:
+        title: Xcode archive
+        inputs:
+        - project_path: ./_tmp/$BITRISE_PROJECT_PATH
+        - scheme: $BITRISE_SCHEME
+        - configuration: $BITRISE_CONFIGURATION
+        - distribution_method: $DISTRIBUTION_TYPE
+        - automatic_code_signing: "off"
         - log_formatter: xcodebuild
 
   _check_xcode_build_for_test:
