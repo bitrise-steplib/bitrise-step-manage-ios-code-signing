@@ -397,7 +397,7 @@ workflows:
 
   _check_xcode_archive_json_project_format:
     steps:
-    - git::https://github.com/bitrise-steplib/steps-xcode-archive.git@xcproj-tryout:
+    - xcode-archive:
         title: Xcode archive
         inputs:
         - project_path: ./_tmp/$BITRISE_PROJECT_PATH
